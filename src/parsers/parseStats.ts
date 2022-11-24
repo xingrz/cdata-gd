@@ -27,7 +27,7 @@ export default function parseStats(input: string): IStats {
 
   const time = input.match(/(\d+)月(\d+)日0\-24时/m);
   if (!time) throw new Error('无法解析统计日期');
-  result.time = `${year}-${time[1]}-${time[2]}`;
+  result.time = `${year}-${time[1].padStart(2, '0')}-${time[2].padStart(2, '0')}`;
 
   const matches = input.matchAll(/(新增[^\d]+)(\d+)例（([^）]+)）/g);
   for (const match of matches) {
