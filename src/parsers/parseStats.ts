@@ -17,7 +17,7 @@ export default function parseStats(input: string): IStats {
   const result: Partial<IStats> = {};
   const data: Partial<IStats['data']> = {};
 
-  const publish = input.match(/【#(\d{4})年(\d+)月(\d+)日广东省新冠肺炎疫情情况#】/m);
+  const publish = input.match(/(\d{4})年(\d+)月(\d+)日/m);
   if (!publish) throw new Error('无法解析发布日期');
 
   let year = parseInt(publish[1]);
@@ -25,9 +25,9 @@ export default function parseStats(input: string): IStats {
     year -= 1;
   }
 
-  const time = input.match(/^(\d+)月(\d+)日0\-24时/m);
+  const time = input.match(/(\d+)月(\d+)日0\-24时/m);
   if (!time) throw new Error('无法解析统计日期');
-  result.time = `${year}/${time[1]}/${time[2]}`;
+  result.time = `${year}-${time[1]}-${time[2]}`;
 
   const matches = input.matchAll(/(新增[^\d]+)(\d+)例（([^）]+)）/g);
   for (const match of matches) {
@@ -36,7 +36,7 @@ export default function parseStats(input: string): IStats {
       const cities: Record<string, number> = {};
 
       let sum = 0;
-      for (const piece of details.split('，')) {
+      for (const piece of details.split(/，|、/)) {
         const city = piece.match(/^([^\d]+)(\d+)/);
         if (city) {
           cities[city[1]] = parseInt(city[2]);

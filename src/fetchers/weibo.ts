@@ -3,7 +3,7 @@ import { CookieJar } from 'tough-cookie';
 
 interface IResult<T> {
   ok: number;
-  data: T;
+  data?: T;
 }
 
 interface IMyMBlog {
@@ -28,12 +28,10 @@ export interface IWeibo {
   text: string;
 }
 
-export async function fetchWeibo(uid: string, page = 1, feature = 0): Promise<IWeibo[]> {
-  const cookieJar = new CookieJar();
-
+export async function genVisitor(cookieJar: CookieJar): Promise<void> {
   await http.get('https://weibo.com/ajax/statuses/mymblog', {
     cookieJar,
-    searchParams: { uid, page, feature },
+    searchParams: { uid: 1962787713, page: 1, feature: 0 },
   });
 
   const visitor = await http.post('https://passport.weibo.com/visitor/genvisitor', {
@@ -51,11 +49,26 @@ export async function fetchWeibo(uid: string, page = 1, feature = 0): Promise<IW
       t: tid,
     },
   });
+}
 
+export async function fetchWeibo(cookieJar: CookieJar, uid: string, page = 1, feature = 0): Promise<IWeibo[]> {
   const { data } = await http.get('https://weibo.com/ajax/statuses/mymblog', {
     cookieJar,
     searchParams: { uid, page, feature },
   }).json<IResult<IMyMBlog>>();
-
+  if (!data) throw new Error('抓取异常');
   return data.list;
+}
+
+interface ILongText {
+  longTextContent: string;
+}
+
+export async function fetchLongText(cookieJar: CookieJar, id: string): Promise<string> {
+  const { data } = await http.get('https://weibo.com/ajax/statuses/longtext', {
+    cookieJar,
+    searchParams: { id },
+  }).json<IResult<ILongText>>();
+  if (!data) throw new Error('抓取异常');
+  return data.longTextContent;
 }
