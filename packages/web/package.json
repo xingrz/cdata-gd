@@ -8,12 +8,16 @@
     "build:stats": "node --no-warnings --experimental-specifier-resolution=node --loader ts-node/esm scripts/build-stats.ts"
   },
   "dependencies": {
+    "@antv/g2plot": "^2.4.22",
     "ant-design-vue": "^3.2.15",
     "core-js": "^3.26.1",
+    "ky": "^0.32.2",
+    "luxon": "^3.1.0",
     "vue": "^3.2.45"
   },
   "devDependencies": {
     "@nabla/vite-plugin-eslint": "^1.4.1",
+    "@types/luxon": "^3.1.0",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
     "@typescript-eslint/parser": "^5.44.0",
     "@vitejs/plugin-vue": "^3.2.0",
