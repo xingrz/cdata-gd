@@ -4,7 +4,7 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
-import { Line } from '@antv/g2plot';
+import { Area } from '@antv/g2plot';
 import type { IStats } from '@cdata/common/types/stats';
 
 import loadDataset from '@/utils/loadDataset';
@@ -18,33 +18,46 @@ function sum(section: Record<string, number>): number {
   return Object.values(section).reduce((n, sum) => n + sum, 0);
 }
 
-const increasement = computed(() => dataset.value.map((data) => ({
-  time: data.time,
-  value: sum(data.data['新增本土确诊病例']) + sum(data.data['新增本土无症状感染者']),
-})));
+const items = computed(() => dataset.value.flatMap((data) => {
+  const r1 = sum(data.data['新增本土确诊病例']);
+  const r2 = sum(data.data['新增本土无症状感染者']);
+  return [
+    { time: data.time, value: r2, type: '新增本土无症状' },
+    { time: data.time, value: r1, type: '新增本土确诊' },
+  ];
+}));
 
 const chart = ref<HTMLElement>();
-let linePlot: Line;
+let plot: Area;
 onMounted(() => {
   if (!chart.value) return;
-  linePlot = new Line(chart.value, {
+  plot = new Area(chart.value, {
     height: 500,
-    data: increasement.value,
+    data: items.value,
     xField: 'time',
     yField: 'value',
+    seriesField: 'type',
     label: {},
     point: {},
-    meta: {
-      value: {
-        alias: '新增',
+    tooltip: {
+      customItems(originalItems) {
+        originalItems.push({
+          name: '总新增',
+          value: originalItems.reduce((total, item) => total + Number(item.value), 0),
+          data: {},
+          mappingData: {},
+          color: '',
+          marker: '',
+        });
+        return originalItems;
       },
     },
   });
-  linePlot.render();
+  plot.render();
 });
-watch(increasement, () => {
-  linePlot.update({
-    data: increasement.value,
-  })
+watch(items, () => {
+  plot.update({
+    data: items.value,
+  });
 });
 </script>
