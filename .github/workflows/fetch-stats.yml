@@ -6,6 +6,11 @@ on:
   schedule:
     - cron: "0 1 * * *"
   workflow_dispatch:
+    inputs:
+      force_run:
+        description: Force run
+        required: false
+        type: boolean
 
 concurrency:
   group: fetch-stats
@@ -31,7 +36,7 @@ jobs:
             packages/bots/**
 
   fetch-stats:
-    if: needs.get-changed.outputs.any_changed == 'true'
+    if: needs.get-changed.outputs.any_changed == 'true' || inputs.force_run
     runs-on: ubuntu-latest
     needs: get-changed
 
