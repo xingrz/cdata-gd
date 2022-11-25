@@ -18,6 +18,9 @@
           <plot-card :stats="stats" />
         </a-col>
       </a-row>
+      <footer :class="$style.footer">
+        数据来源：<a href="https://weibo.com/gdjkjy" target="_blank" noreferrer>@健康广东</a>
+      </footer>
     </div>
   </a-config-provider>
 </template>
@@ -47,5 +50,11 @@ onMounted(async () => {
 .container {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.footer {
+  margin-top: 32px;
+  font-size: 90%;
+  opacity: 0.5;
 }
 </style>
