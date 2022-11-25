@@ -24,12 +24,12 @@ import type { IIncreaseType, IStats } from '@cdata/common/types/stats';
 import sumOf from '@/utils/sumOf';
 
 const props = defineProps<{
-  stats: IStats[] | undefined;
+  stats: IStats[] | null;
   title: string;
   type: IIncreaseType;
 }>();
 
-function getData(stats: IStats[] | undefined, minus: number, type: IIncreaseType): number | undefined {
+function getData(stats: IStats[] | null, minus: number, type: IIncreaseType): number | undefined {
   return stats ? sumOf(stats[stats.length - minus].data[type]) : undefined;
 }
 

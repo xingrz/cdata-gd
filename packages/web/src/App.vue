@@ -36,7 +36,7 @@ import PlotCard from '@/cards/PlotCard.vue';
 
 import loadDataset from '@/utils/loadDataset';
 
-const stats = ref<IStats[]>();
+const stats = ref<IStats[] | null>(null);
 onMounted(async () => {
   stats.value = await loadDataset('stats');
 });
@@ -44,7 +44,7 @@ onMounted(async () => {
 
 <style lang="scss" module>
 :global(body) {
-  padding: 32px;
+  padding: 16px;
 }
 
 .container {

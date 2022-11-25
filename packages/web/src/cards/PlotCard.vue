@@ -1,14 +1,22 @@
 <template>
   <a-card>
     <div ref="plotElement" :style="{ height: '500px' }" />
-    <a-space>
+    <a-space :class="$style.options">
+      <a-radio-group v-model:value="showTotal">
+        <a-radio-button :value="true">合计</a-radio-button>
+        <a-radio-button :value="false">各项独立</a-radio-button>
+      </a-radio-group>
+      <a-select v-model:value="visibleTypes" :options="selectableTypes" mode="multiple" :max-tag-count="1"
+        :style="{ width: '15em' }" />
       <a-range-picker v-model:value="range" :disabled-date="disabledDate">
         <template #renderExtraFooter>
           <a-space>
             <a-button size="small" @click="() => range = undefined">显示所有</a-button>
-            <a-button size="small" @click="() => selectRecent(60)">近 60 天</a-button>
-            <a-button size="small" @click="() => selectRecent(30)">近 30 天</a-button>
-            <a-button size="small" @click="() => selectRecent(7)">近 7 天</a-button>
+            <a-input-group compact>
+              <a-button size="small" @click="() => selectRecent(60)">近 60 天</a-button>
+              <a-button size="small" @click="() => selectRecent(30)">近 30 天</a-button>
+              <a-button size="small" @click="() => selectRecent(7)">近 7 天</a-button>
+            </a-input-group>
           </a-space>
         </template>
       </a-range-picker>
@@ -18,10 +26,11 @@
 
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
-import { Area, type AreaOptions } from '@antv/g2plot';
+import type { SelectProps } from 'ant-design-vue';
+import { Line, type LineOptions } from '@antv/g2plot';
 import { first, last } from 'lodash';
 import type { Dayjs } from 'dayjs';
-import type { IStats } from '@cdata/common/types/stats';
+import type { IIncreaseType, IStats } from '@cdata/common/types/stats';
 
 import toDay from '@/utils/toDay';
 import sumOf from '@/utils/sumOf';
@@ -29,7 +38,7 @@ import sumOf from '@/utils/sumOf';
 import usePlot from '@/composables/usePlot';
 
 const props = defineProps<{
-  stats: IStats[] | undefined;
+  stats: IStats[] | null;
 }>();
 
 const range = ref<[Dayjs, Dayjs]>();
@@ -53,6 +62,28 @@ watch(props, () => {
   }
 });
 
+const showTotal = ref(false);
+
+const selectableTypes: SelectProps['options'] & { value: IIncreaseType }[] = [
+  { value: '新增本土确诊病例', label: '本土确诊' },
+  { value: '新增本土无症状感染者', label: '本土无症状' },
+  { value: '新增境外输入确诊病例', label: '境外输入确诊' },
+  { value: '新增境外输入无症状感染者', label: '境外输入无症状' },
+];
+
+const defaultVisibleTypes: IIncreaseType[] = [
+  '新增本土确诊病例',
+  '新增本土无症状感染者',
+];
+
+const visibleTypes = ref<IIncreaseType[]>(defaultVisibleTypes);
+
+watch(visibleTypes, () => {
+  if (visibleTypes.value.length == 0) {
+    visibleTypes.value = defaultVisibleTypes;
+  }
+});
+
 const items = computed(() => (props.stats || [])
   .filter((data) => {
     if (!range.value) return true;
@@ -61,15 +92,19 @@ const items = computed(() => (props.stats || [])
     return current >= start && current <= end;
   })
   .flatMap((data) => {
-    const r1 = sumOf(data.data['新增本土确诊病例']);
-    const r2 = sumOf(data.data['新增本土无症状感染者']);
-    return [
-      { time: data.time, value: r2, type: '新增本土无症状' },
-      { time: data.time, value: r1, type: '新增本土确诊' },
-    ];
+    const items = visibleTypes.value.map((type) => {
+      const sum = sumOf(data.data[type]);
+      return { time: data.time, value: sum, type: type };
+    });
+    if (showTotal.value) {
+      const total = items.reduce((total, item) => total + item.value, 0);
+      return { time: data.time, value: total, type: '总新增' };
+    } else {
+      return items;
+    }
   }));
 
-const { plotElement, plot } = usePlot<Area, AreaOptions>((el) => new Area(el, {
+const { plotElement, plot } = usePlot<Line, LineOptions>((el) => new Line(el, {
   height: 500,
   data: items.value,
   xField: 'time',
@@ -79,14 +114,16 @@ const { plotElement, plot } = usePlot<Area, AreaOptions>((el) => new Area(el, {
   point: {},
   tooltip: {
     customItems(originalItems) {
-      originalItems.push({
-        name: '总新增',
-        value: originalItems.reduce((total, item) => total + Number(item.value), 0),
-        data: {},
-        mappingData: {},
-        color: '',
-        marker: '',
-      });
+      if (originalItems.length > 1) {
+        originalItems.push({
+          name: '总新增',
+          value: originalItems.reduce((total, item) => total + Number(item.value), 0),
+          data: {},
+          mappingData: {},
+          color: '',
+          marker: '',
+        });
+      }
       return originalItems;
     },
   },
@@ -98,3 +135,11 @@ watch(items, () => {
   });
 });
 </script>
+
+<style lang="scss" module>
+.options {
+  width: 100%;
+  margin-top: 32px;
+  justify-content: flex-end;
+}
+</style>
