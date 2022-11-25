@@ -1,17 +1,4 @@
-enum IIncreaseTypes {
-  '新增本土确诊病例',
-  '新增本土无症状感染者',
-  '新增境外输入确诊病例',
-  '新增境外输入无症状感染者',
-};
-
-type IIncreaseType = keyof typeof IIncreaseTypes;
-type ICity = string;
-
-export interface IStats {
-  time: string;
-  data: Record<IIncreaseType, Record<ICity, number>>;
-}
+import { IIncreaseType, IIncreaseTypes, IStats } from '@datagd/common/types/stats';
 
 export default function parseStats(input: string): IStats {
   const result: Partial<IStats> = {};

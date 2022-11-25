@@ -1,0 +1,5 @@
+{
+  "name": "@datagd/common",
+  "type": "module",
+  "private": true
+}

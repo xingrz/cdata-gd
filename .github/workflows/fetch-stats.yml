@@ -21,7 +21,10 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci && npm test
+        run: npm ci
+
+      - name: Run tests
+        run: npm -w @datagd/bots test
 
       - name: Checkout data branch
         uses: actions/checkout@v3
@@ -30,7 +33,7 @@ jobs:
           path: data
 
       - name: Fetch data
-        run: npm run fetch:stats
+        run: npm -w @datagd/bots run fetch:stats
 
       - name: Get current time
         uses: gerred/actions/current-time@master
