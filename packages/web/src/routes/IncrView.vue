@@ -1,5 +1,5 @@
 <template>
-  <div ref="chart" />
+  <div ref="plotElement" />
   <a-space>
     <a-range-picker v-model:value="range" :disabled-date="disabledDate">
       <template #renderExtraFooter>
@@ -16,13 +16,15 @@
 
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
-import { Area } from '@antv/g2plot';
+import { Area, type AreaOptions } from '@antv/g2plot';
 import { first, last } from 'lodash';
 import type { Dayjs } from 'dayjs';
 import type { IStats } from '@cdata/common/types/stats';
 
 import loadDataset from '@/utils/loadDataset';
 import toDay from '@/utils/toDay';
+
+import usePlot from '@/composables/usePlot';
 
 const dataset = ref<IStats[]>([]);
 onMounted(async () => {
@@ -63,36 +65,31 @@ const items = computed(() => dataset.value
     ];
   }));
 
-const chart = ref<HTMLElement>();
-let plot: Area;
-onMounted(() => {
-  if (!chart.value) return;
-  plot = new Area(chart.value, {
-    height: 500,
-    data: items.value,
-    xField: 'time',
-    yField: 'value',
-    seriesField: 'type',
-    label: {},
-    point: {},
-    tooltip: {
-      customItems(originalItems) {
-        originalItems.push({
-          name: '总新增',
-          value: originalItems.reduce((total, item) => total + Number(item.value), 0),
-          data: {},
-          mappingData: {},
-          color: '',
-          marker: '',
-        });
-        return originalItems;
-      },
+const { plotElement, plot } = usePlot<Area, AreaOptions>((el) => new Area(el, {
+  height: 500,
+  data: items.value,
+  xField: 'time',
+  yField: 'value',
+  seriesField: 'type',
+  label: {},
+  point: {},
+  tooltip: {
+    customItems(originalItems) {
+      originalItems.push({
+        name: '总新增',
+        value: originalItems.reduce((total, item) => total + Number(item.value), 0),
+        data: {},
+        mappingData: {},
+        color: '',
+        marker: '',
+      });
+      return originalItems;
     },
-  });
-  plot.render();
-});
+  },
+}));
+
 watch(items, () => {
-  plot.update({
+  plot.value?.update({
     data: items.value,
   });
 });
