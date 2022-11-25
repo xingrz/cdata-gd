@@ -50,6 +50,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Checkout data branch
+        uses: actions/checkout@v3
+        with:
+          ref: data
+          path: data
+
+      - name: Build stats
+        run: npm -w @datagd/web run build:stats
+
       - name: Build
         run: npm -w @datagd/web run build
 
