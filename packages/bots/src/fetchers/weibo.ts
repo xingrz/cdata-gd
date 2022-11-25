@@ -6,6 +6,39 @@ interface IResult<T> {
   data?: T;
 }
 
+async function getCookie(cookieJar: CookieJar, key: string): Promise<string | undefined> {
+  const cookies = await cookieJar.getCookies('https://weibo.com/');
+  return cookies.find((cookie) => cookie.key == key)?.value;
+}
+
+export async function genVisitor(cookieJar: CookieJar): Promise<void> {
+  const visitor = await http.post('https://passport.weibo.com/visitor/genvisitor', {
+    cookieJar,
+    form: { cb: 'gen_callback' },
+  }).text();
+  const match = visitor.match(/"tid":"([^"]+)"/);
+  if (!match) throw new Error('无法获取 tid');
+  const tid = match[1];
+
+  await http.get('https://passport.weibo.com/visitor/visitor', {
+    cookieJar,
+    searchParams: {
+      a: 'incarnate',
+      t: tid,
+      cb: 'cross_domain',
+      from: 'weibo',
+      _rand: Math.random(),
+    },
+    headers: {
+      'Referer': 'https://passport.weibo.com/visitor/visitor',
+    },
+  });
+
+  if (!(await getCookie(cookieJar, 'SUB'))) {
+    throw new Error('访问身份获取异常');
+  }
+}
+
 interface IMyMBlog {
   since_id: string;
   list: IWeibo[];
@@ -26,29 +59,6 @@ export interface IWeibo {
   };
   text_raw: string;
   text: string;
-}
-
-export async function genVisitor(cookieJar: CookieJar): Promise<void> {
-  await http.get('https://weibo.com/ajax/statuses/mymblog', {
-    cookieJar,
-    searchParams: { uid: 1962787713, page: 1, feature: 0 },
-  });
-
-  const visitor = await http.post('https://passport.weibo.com/visitor/genvisitor', {
-    cookieJar,
-    form: { cb: 'gen_callback' },
-  }).text();
-  const match = visitor.match(/"tid":"([^"]+)"/);
-  if (!match) throw new Error('无法获取 tid');
-  const tid = match[1];
-
-  await http.get('https://passport.weibo.com/visitor/visitor', {
-    cookieJar,
-    searchParams: {
-      a: 'incarnate',
-      t: tid,
-    },
-  });
 }
 
 export async function fetchWeibo(cookieJar: CookieJar, uid: string, page = 1, feature = 0): Promise<IWeibo[]> {
