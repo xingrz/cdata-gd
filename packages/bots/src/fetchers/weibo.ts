@@ -56,7 +56,7 @@ export async function fetchWeibo(cookieJar: CookieJar, uid: string, page = 1, fe
     cookieJar,
     searchParams: { uid, page, feature },
   }).json<IResult<IMyMBlog>>();
-  if (!data) throw new Error('抓取异常');
+  if (!data) throw new Error('列表抓取异常');
   return data.list;
 }
 
@@ -69,6 +69,6 @@ export async function fetchLongText(cookieJar: CookieJar, id: string): Promise<s
     cookieJar,
     searchParams: { id },
   }).json<IResult<ILongText>>();
-  if (!data) throw new Error('抓取异常');
+  if (!data) throw new Error('长文抓取异常');
   return data.longTextContent;
 }
