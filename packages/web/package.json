@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 8080",
     "build": "vite build",
-    "build:stats": "node --no-warnings --experimental-specifier-resolution=node --loader ts-node/esm scripts/build-stats.ts"
+    "script": "node --no-warnings --experimental-specifier-resolution=node --loader ts-node/esm"
   },
   "dependencies": {
     "@antv/g2plot": "^2.4.22",

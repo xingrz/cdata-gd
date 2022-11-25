@@ -57,10 +57,13 @@ jobs:
           path: data
 
       - name: Build stats
-        run: npm -w @cdata/web run build:stats
+        run: npm -w @cdata/web run script scripts/build-stats.ts
 
       - name: Build
         run: npm -w @cdata/web run build
+
+      - name: Ensure modified time
+        run: npm -w @cdata/web run script scripts/ensure-mtime.ts
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
