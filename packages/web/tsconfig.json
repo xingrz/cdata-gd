@@ -1,0 +1,17 @@
+{
+  "extends": "@vue/tsconfig/tsconfig.web.json",
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*",
+      ],
+    },
+  },
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.vue",
+  ],
+}
