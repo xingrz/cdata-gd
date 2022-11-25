@@ -1,5 +1,5 @@
 {
-  "name": "@datagd/web",
+  "name": "@cdata/web",
   "type": "module",
   "private": true,
   "scripts": {

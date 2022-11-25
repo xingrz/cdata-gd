@@ -1,4 +1,4 @@
-import { IIncreaseType, IIncreaseTypes, IStats } from '@datagd/common/types/stats';
+import { IIncreaseType, IIncreaseTypes, IStats } from '@cdata/common/types/stats';
 
 export default function parseStats(input: string): IStats {
   const result: Partial<IStats> = {};

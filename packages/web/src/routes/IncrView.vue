@@ -5,7 +5,7 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref, watch } from 'vue';
 import { Line } from '@antv/g2plot';
-import type { IStats } from '@datagd/common/types/stats';
+import type { IStats } from '@cdata/common/types/stats';
 
 import loadDataset from '@/utils/loadDataset';
 

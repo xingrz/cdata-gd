@@ -1,5 +1,5 @@
 {
-    "name": "@datagd/bots",
+    "name": "@cdata/bots",
     "type": "module",
     "private": true,
     "scripts": {

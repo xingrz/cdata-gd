@@ -49,7 +49,7 @@ jobs:
         run: npm ci
 
       - name: Run tests
-        run: npm -w @datagd/bots test
+        run: npm -w @cdata/bots test
 
       - name: Checkout data branch
         uses: actions/checkout@v3
@@ -58,7 +58,7 @@ jobs:
           path: data
 
       - name: Fetch data
-        run: npm -w @datagd/bots run fetch:stats
+        run: npm -w @cdata/bots run fetch:stats
 
       - name: Get current time
         uses: gerred/actions/current-time@master

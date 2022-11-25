@@ -57,10 +57,10 @@ jobs:
           path: data
 
       - name: Build stats
-        run: npm -w @datagd/web run build:stats
+        run: npm -w @cdata/web run build:stats
 
       - name: Build
-        run: npm -w @datagd/web run build
+        run: npm -w @cdata/web run build
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
