@@ -23,6 +23,12 @@ jobs:
       - name: Install dependencies
         run: npm ci && npm test
 
+      - name: Checkout data branch
+        uses: actions/checkout@v3
+        with:
+          ref: data
+          path: data
+
       - name: Fetch data
         run: npm run fetch:stats
 
