@@ -45,6 +45,7 @@ import usePlot from '@/composables/usePlot';
 
 const props = defineProps<{
   stats: IStats[] | null;
+  city: string | null;
 }>();
 
 const range = ref<[Dayjs, Dayjs]>();
@@ -107,7 +108,7 @@ const items = computed(() => (props.stats || [])
   })
   .flatMap((data): IItem | IItem[] => {
     const items = visibleTypes.value.map((type) => {
-      const sum = sumOf(data.data[type]);
+      const sum = props.city ? (data.data[type][props.city] || 0) : sumOf(data.data[type]);
       return { time: data.time, value: sum, type: type, ref: data.ref };
     });
     if (showTotal.value) {

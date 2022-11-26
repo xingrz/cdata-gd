@@ -2,20 +2,23 @@
   <a-config-provider :locale="zh_CN">
     <div :class="$style.container">
       <a-row :gutter="[16, 16]">
-        <a-col :xs="24" :md="12" :lg="6">
-          <stats-card :stats="stats" title="昨日新增本土确诊" type="新增本土确诊病例" />
+        <a-col :xs="24">
+          <a-select v-model:value="visibleCity" :options="selectableCities" :style="{ width: '8em' }" />
         </a-col>
         <a-col :xs="24" :md="12" :lg="6">
-          <stats-card :stats="stats" title="昨日本土无症状" type="新增本土无症状感染者" />
+          <stats-card :stats="stats" title="昨日新增本土确诊" type="新增本土确诊病例" :city="visibleCity" />
         </a-col>
         <a-col :xs="24" :md="12" :lg="6">
-          <stats-card :stats="stats" title="昨日新增境外输入确诊" type="新增境外输入确诊病例" />
+          <stats-card :stats="stats" title="昨日本土无症状" type="新增本土无症状感染者" :city="visibleCity" />
         </a-col>
         <a-col :xs="24" :md="12" :lg="6">
-          <stats-card :stats="stats" title="昨日新增增境外输入无症状" type="新增境外输入无症状感染者" />
+          <stats-card :stats="stats" title="昨日新增境外输入确诊" type="新增境外输入确诊病例" :city="visibleCity" />
+        </a-col>
+        <a-col :xs="24" :md="12" :lg="6">
+          <stats-card :stats="stats" title="昨日新增增境外输入无症状" type="新增境外输入无症状感染者" :city="visibleCity" />
         </a-col>
         <a-col :xs="24">
-          <timeline-card :stats="stats" />
+          <timeline-card :stats="stats" :city="visibleCity" />
         </a-col>
       </a-row>
       <footer :class="$style.footer">
@@ -26,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import zh_CN from 'ant-design-vue/es/locale/zh_CN';
 
 import type { IStats } from '@cdata/common/types/stats';
@@ -40,6 +43,26 @@ const stats = ref<IStats[] | null>(null);
 onMounted(async () => {
   stats.value = await loadDataset('stats');
 });
+
+const cities = computed(() => {
+  const cities: Record<string, boolean> = {};
+  for (const stat of (stats.value || [])) {
+    for (const section of Object.values(stat.data)) {
+      for (const city of Object.keys(section)) {
+        cities[city] = true;
+      }
+    }
+  }
+  return Object.keys(cities);
+});
+
+const visibleCity = ref<string | null>(null);
+const selectableCities = computed(() => [
+  { label: '全省', value: null },
+  ...cities.value.map((city) => ({
+    label: city, value: city
+  })),
+]);
 </script>
 
 <style lang="scss" module>
