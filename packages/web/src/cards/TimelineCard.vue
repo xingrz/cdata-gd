@@ -41,7 +41,7 @@ import type { IIncreaseType, IStats } from '@cdata/common/types/stats';
 import toDay from '@/utils/toDay';
 import sumOf from '@/utils/sumOf';
 
-import usePlot from '@/composables/usePlot';
+import { useG2Plot } from '@/composables/usePlot';
 
 const props = defineProps<{
   stats: IStats[] | null;
@@ -59,7 +59,7 @@ function disabledDate(current: Dayjs): boolean {
 
 function selectRecent(days: number): void {
   const end = toDay(last(props.stats)!.time);
-  const start = end.subtract(days, 'days');
+  const start = end.subtract(days - 1, 'days');
   range.value = [start, end];
 }
 
@@ -119,7 +119,7 @@ const items = computed(() => (props.stats || [])
     }
   }));
 
-const { plotElement, plot } = usePlot<Line, LineOptions>((el) => new Line(el, {
+const { plotElement, plot } = useG2Plot<Line, LineOptions>((el) => new Line(el, {
   height: 500,
   data: items.value,
   xField: 'time',

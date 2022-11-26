@@ -1,6 +1,6 @@
 <template>
   <a-config-provider :locale="zh_CN">
-    <div :class="$style.container">
+    <div>
       <a-row :gutter="[16, 16]">
         <a-col :xs="24">
           <a-select v-model:value="visibleCity" :options="selectableCities" :style="{ width: '8em' }" />
@@ -20,9 +20,15 @@
         <a-col :xs="24">
           <timeline-card :stats="stats" :city="visibleCity" />
         </a-col>
+        <a-col :xs="24">
+          <dots-card :reports="reports" :streets="streets" />
+        </a-col>
       </a-row>
       <footer :class="$style.footer">
-        数据来源：<a href="https://weibo.com/gdjkjy" target="_blank" noreferrer>@健康广东</a>
+        数据来源：
+        <a href="https://weibo.com/gdjkjy" target="_blank" noreferrer>@健康广东</a>
+        <a-divider type="vertical" />
+        <a href="http://wjw.gz.gov.cn/ztzl/xxfyyqfk/yqtb/index.html" target="_blank" noreferrer>广州市卫健委</a>
       </footer>
     </div>
   </a-config-provider>
@@ -31,11 +37,15 @@
 <script lang="ts" setup>
 import { computed, onMounted, ref } from 'vue';
 import zh_CN from 'ant-design-vue/es/locale/zh_CN';
+import http from 'ky';
 
 import type { IStats } from '@cdata/common/types/stats';
+import type { IReport } from '@cdata/common/types/report';
+import type { ILocation } from '@cdata/common/types/location';
 
 import StatsCard from '@/cards/StatsCard.vue';
 import TimelineCard from '@/cards/TimelineCard.vue';
+import DotsCard from './cards/DotsCard.vue';
 
 import loadDataset from '@/utils/loadDataset';
 
@@ -63,16 +73,21 @@ const selectableCities = computed(() => [
     label: city, value: city
   })),
 ]);
+
+const streets = ref<Record<string, ILocation>>({});
+onMounted(async () => {
+  streets.value = await http.get(`./data/streets.json`).json();
+});
+
+const reports = ref<IReport[] | null>(null);
+onMounted(async () => {
+  reports.value = await loadDataset('reports');
+});
 </script>
 
 <style lang="scss" module>
 :global(body) {
   padding: 16px;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
 }
 
 .footer {

@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@antv/g2plot": "^2.4.22",
+    "@antv/l7plot": "^0.4.2",
     "ant-design-vue": "^3.2.15",
     "core-js": "^3.26.1",
     "dayjs": "^1.11.6",

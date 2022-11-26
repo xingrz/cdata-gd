@@ -4,5 +4,5 @@ import customParseFormat from 'dayjs/plugin/customParseFormat';
 dayjs.extend(customParseFormat);
 
 export default function toDay(name: string): Dayjs {
-  return dayjs(name, 'YYYY-MM-DD').add(1, 'day');
+  return dayjs(name, 'YYYY-MM-DD');
 }
