@@ -62,8 +62,8 @@ jobs:
           ref: data
           path: data
 
-      - name: Build stats
-        run: npm -w @cdata/web run script scripts/build-stats.ts
+      - name: Build data files
+        run: npm -w @cdata/web run script scripts/build-data.ts
 
       - name: Build
         run: npm -w @cdata/web run build

@@ -1,14 +1,13 @@
 import { join, resolve } from 'path';
-import { ensureDir, outputFile, pathExists } from 'fs-extra';
+import fs from 'fs-extra';
 import { stringify } from 'yaml';
 import { CookieJar } from 'tough-cookie';
 
 import { fetchLongText, fetchWeibo, genVisitor } from './fetchers/weibo';
 import parseStats from './parsers/parseStats';
 
-const dataDir = resolve('..', '..', 'data', 'stats');
-
-await ensureDir(dataDir);
+const statsDir = resolve('..', '..', 'data', 'stats');
+await fs.ensureDir(statsDir);
 
 const cookieJar = new CookieJar();
 await genVisitor(cookieJar);
@@ -27,14 +26,14 @@ fetch: for (let page = 1; page <= 5; page++) {
 
       const stats = parseStats(text);
 
-      const file = join(dataDir, `${stats.time}.yml`);
-      if (await pathExists(file)) {
+      const file = join(statsDir, `${stats.time}.yml`);
+      if (await fs.pathExists(file)) {
         break fetch;
       }
 
       console.log(`新数据: ${stats.time}`);
 
-      await outputFile(file, stringify({ ...stats, ref }));
+      await fs.outputFile(file, stringify({ ...stats, ref }));
     } catch (e) {
       console.log(`解析异常: ${e}`);
     }
