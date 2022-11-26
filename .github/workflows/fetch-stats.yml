@@ -53,9 +53,6 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm -w @cdata/bots test
-
       - name: Checkout data branch
         uses: actions/checkout@v3
         with:
@@ -76,7 +73,7 @@ jobs:
           keep_history: true
           allow_empty_commit: false
           build_dir: data
-          commit_message: "Auto data update ${{ steps.current-time.outputs.time }}"
+          commit_message: "Update stats ${{ steps.current-time.outputs.time }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
