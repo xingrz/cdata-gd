@@ -9,8 +9,8 @@
         </a-radio-group>
       </a-col>
       <a-col flex="0 1 auto">
-        <a-select v-model:value="visibleTypes" :options="selectableTypes" mode="multiple" :max-tag-count="1"
-          :style="{ width: '15em' }" />
+        <a-select v-model:value="visibleTypes" :options="selectableTypes" mode="multiple" :max-tag-count="2"
+          :style="{ width: '24em' }" />
       </a-col>
       <a-col flex="0 1 auto">
         <a-range-picker v-model:value="range" :disabled-date="disabledDate">
