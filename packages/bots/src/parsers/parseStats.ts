@@ -26,8 +26,9 @@ export default function parseStats(input: string): IStats {
       for (const piece of details.split(/，|、/)) {
         const city = piece.match(/^([^\d]+)(\d+)/);
         if (city) {
-          cities[city[1]] = parseInt(city[2]);
-          sum += cities[city[1]];
+          const name = city[1].trim();
+          cities[name] = parseInt(city[2]);
+          sum += cities[name];
         }
       }
 
