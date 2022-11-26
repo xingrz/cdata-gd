@@ -2,7 +2,9 @@ name: Deploy web
 
 on:
   push:
-    branches: [ master, data ]
+    branches:
+      - master
+      - data
   workflow_dispatch:
     inputs:
       force_run:
@@ -28,7 +30,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         with:
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Get changed files
         id: changed-files
