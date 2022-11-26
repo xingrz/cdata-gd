@@ -120,7 +120,7 @@ const { plotElement, plot } = useL7Plot<Dot, DotOptions>((el) => new Dot(el, {
   },
   size: {
     field: 'count',
-    value: ({ count }) => Math.min(Math.max(7, count * 0.015), 100),
+    value: ({ count }) => 7 + count * 0.03,
   },
   color: {
     field: 'count',
