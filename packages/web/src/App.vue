@@ -15,7 +15,7 @@
           <stats-card :stats="stats" title="昨日新增增境外输入无症状" type="新增境外输入无症状感染者" />
         </a-col>
         <a-col :xs="24">
-          <plot-card :stats="stats" />
+          <timeline-card :stats="stats" />
         </a-col>
       </a-row>
       <footer :class="$style.footer">
@@ -32,7 +32,7 @@ import zh_CN from 'ant-design-vue/es/locale/zh_CN';
 import type { IStats } from '@cdata/common/types/stats';
 
 import StatsCard from '@/cards/StatsCard.vue';
-import PlotCard from '@/cards/PlotCard.vue';
+import TimelineCard from '@/cards/TimelineCard.vue';
 
 import loadDataset from '@/utils/loadDataset';
 
@@ -53,7 +53,7 @@ onMounted(async () => {
 }
 
 .footer {
-  margin-top: 32px;
+  padding: 32px 0 16px;
   font-size: 90%;
   opacity: 0.5;
 }
