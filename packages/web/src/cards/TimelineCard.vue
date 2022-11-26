@@ -94,6 +94,7 @@ interface IItem {
   time: string;
   value: number;
   type: string;
+  ref?: string;
   items?: IItem[];
 }
 
@@ -107,11 +108,11 @@ const items = computed(() => (props.stats || [])
   .flatMap((data): IItem | IItem[] => {
     const items = visibleTypes.value.map((type) => {
       const sum = sumOf(data.data[type]);
-      return { time: data.time, value: sum, type: type };
+      return { time: data.time, value: sum, type: type, ref: data.ref };
     });
     if (showTotal.value) {
       const total = items.reduce((total, item) => total + item.value, 0);
-      return { time: data.time, value: total, type: '总新增', items };
+      return { time: data.time, value: total, type: '总新增', ref: data.ref, items };
     } else {
       return items;
     }
@@ -126,9 +127,10 @@ const { plotElement, plot } = usePlot<Line, LineOptions>((el) => new Line(el, {
   label: {},
   point: {},
   tooltip: {
+    enterable: true,
     customItems(originalItems) {
+      const data = originalItems[0].data as IItem;
       if (showTotal.value) {
-        const data = originalItems[0].data as IItem;
         for (const item of (data.items || [])) {
           originalItems.push({
             name: item.type,
@@ -143,6 +145,16 @@ const { plotElement, plot } = usePlot<Line, LineOptions>((el) => new Line(el, {
         originalItems.push({
           name: '总新增',
           value: originalItems.reduce((total, item) => total + Number(item.value), 0),
+          data: {},
+          mappingData: {},
+          color: '',
+          marker: '',
+        });
+      }
+      if (data.ref) {
+        originalItems.push({
+          name: '数据来源',
+          value: `<a href="${data.ref}" target="_blank" noreferrer>@健康广东</a>`,
           data: {},
           mappingData: {},
           color: '',

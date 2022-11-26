@@ -11,4 +11,5 @@ export type ICity = string;
 export interface IStats {
   time: string;
   data: Record<IIncreaseType, Record<ICity, number>>;
+  ref?: string;
 }
