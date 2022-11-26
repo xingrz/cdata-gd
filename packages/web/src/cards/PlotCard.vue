@@ -4,7 +4,7 @@
     <a-space :class="$style.options">
       <a-radio-group v-model:value="showTotal">
         <a-radio-button :value="true">合计</a-radio-button>
-        <a-radio-button :value="false">各项独立</a-radio-button>
+        <a-radio-button :value="false">分项</a-radio-button>
       </a-radio-group>
       <a-select v-model:value="visibleTypes" :options="selectableTypes" mode="multiple" :max-tag-count="1"
         :style="{ width: '15em' }" />
@@ -84,6 +84,13 @@ watch(visibleTypes, () => {
   }
 });
 
+interface IItem {
+  time: string;
+  value: number;
+  type: string;
+  items?: IItem[];
+}
+
 const items = computed(() => (props.stats || [])
   .filter((data) => {
     if (!range.value) return true;
@@ -91,14 +98,14 @@ const items = computed(() => (props.stats || [])
     const current = toDay(data.time);
     return current >= start && current <= end;
   })
-  .flatMap((data) => {
+  .flatMap((data): IItem | IItem[] => {
     const items = visibleTypes.value.map((type) => {
       const sum = sumOf(data.data[type]);
       return { time: data.time, value: sum, type: type };
     });
     if (showTotal.value) {
       const total = items.reduce((total, item) => total + item.value, 0);
-      return { time: data.time, value: total, type: '总新增' };
+      return { time: data.time, value: total, type: '总新增', items };
     } else {
       return items;
     }
@@ -114,7 +121,19 @@ const { plotElement, plot } = usePlot<Line, LineOptions>((el) => new Line(el, {
   point: {},
   tooltip: {
     customItems(originalItems) {
-      if (originalItems.length > 1) {
+      if (showTotal.value) {
+        const data = originalItems[0].data as IItem;
+        for (const item of (data.items || [])) {
+          originalItems.push({
+            name: item.type,
+            value: item.value,
+            data: {},
+            mappingData: {},
+            color: '',
+            marker: '',
+          });
+        }
+      } else if (originalItems.length > 1) {
         originalItems.push({
           name: '总新增',
           value: originalItems.reduce((total, item) => total + Number(item.value), 0),
