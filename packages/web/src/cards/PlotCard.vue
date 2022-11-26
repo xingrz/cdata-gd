@@ -68,7 +68,7 @@ watch(props, () => {
   }
 });
 
-const showTotal = ref(false);
+const showTotal = ref(true);
 
 const selectableTypes: SelectProps['options'] & { value: IIncreaseType }[] = [
   { value: '新增本土确诊病例', label: '本土确诊' },
