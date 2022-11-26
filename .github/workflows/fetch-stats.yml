@@ -79,3 +79,8 @@ jobs:
           commit_message: "Auto data update ${{ steps.current-time.outputs.time }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy
+        run: gh workflow run deploy.yml -F force_run=true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
