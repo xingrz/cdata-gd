@@ -23,7 +23,7 @@
         <a-checkbox-group v-model:value="visibleSources" :options="selectableSources" :class="$style.selections" />
         <a-divider />
         <div :class="$style.notes">
-          <p>标记所处位置仅代表新增数字所属街道，并不代表感染者准确位置。</p>
+          <p>标记仅示意新增数字所属街道，并不代表感染者准确位置。</p>
           <p>数据来源：<a href="http://wjw.gz.gov.cn/ztzl/xxfyyqfk/yqtb/index.html" target="_blank" noreferrer>广州市卫健委</a></p>
         </div>
       </a-col>
@@ -35,8 +35,8 @@
 import { computed, ref, watch } from 'vue';
 import type { SelectProps } from 'ant-design-vue';
 import { Dot, type DotOptions } from '@antv/l7plot';
-import dayjs, { Dayjs } from 'dayjs';
-import { last, uniq } from 'lodash';
+import type { Dayjs } from 'dayjs';
+import { first, last, uniq } from 'lodash';
 import type { IReport, IReportType } from '@cdata/common/types/report';
 import type { ILocation } from '@cdata/common/types/location';
 
@@ -52,7 +52,10 @@ const props = defineProps<{
 const range = ref<[Dayjs, Dayjs]>();
 
 function disabledDate(current: Dayjs): boolean {
-  return current > dayjs().subtract(1, 'day').endOf('day');
+  if (!props.reports?.length) return true;
+  const start = toDay(first(props.reports)!.time);
+  const end = toDay(last(props.reports)!.time);
+  return current < start || current > end;
 }
 
 function selectRecent(days: number): void {
@@ -120,7 +123,7 @@ const { plotElement, plot } = useL7Plot<Dot, DotOptions>((el) => new Dot(el, {
   },
   size: {
     field: 'count',
-    value: ({ count }) => 7 + count * 0.03,
+    value: ({ count }) => Math.min(150, 7 + count * 0.03),
   },
   color: {
     field: 'count',
@@ -128,7 +131,7 @@ const { plotElement, plot } = useL7Plot<Dot, DotOptions>((el) => new Dot(el, {
     scale: { type: 'quantize' }
   },
   style: {
-    opacity: 0.8,
+    opacity: 0.75,
   },
   tooltip: {
     items: [

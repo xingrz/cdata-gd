@@ -9,7 +9,7 @@
           <stats-card :stats="stats" title="昨日新增本土确诊" type="新增本土确诊病例" :city="visibleCity" />
         </a-col>
         <a-col :xs="24" :md="12" :lg="6">
-          <stats-card :stats="stats" title="昨日本土无症状" type="新增本土无症状感染者" :city="visibleCity" />
+          <stats-card :stats="stats" title="昨日新增本土无症状" type="新增本土无症状感染者" :city="visibleCity" />
         </a-col>
         <a-col :xs="24" :md="12" :lg="6">
           <stats-card :stats="stats" title="昨日新增境外输入确诊" type="新增境外输入确诊病例" :city="visibleCity" />
