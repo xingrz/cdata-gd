@@ -1,26 +1,32 @@
 <template>
   <a-card>
     <div ref="plotElement" :style="{ height: '500px' }" />
-    <a-space :class="$style.options">
-      <a-radio-group v-model:value="showTotal">
-        <a-radio-button :value="true">合计</a-radio-button>
-        <a-radio-button :value="false">分项</a-radio-button>
-      </a-radio-group>
-      <a-select v-model:value="visibleTypes" :options="selectableTypes" mode="multiple" :max-tag-count="1"
-        :style="{ width: '15em' }" />
-      <a-range-picker v-model:value="range" :disabled-date="disabledDate">
-        <template #renderExtraFooter>
-          <a-space>
-            <a-button size="small" @click="() => range = undefined">显示所有</a-button>
-            <a-input-group compact>
-              <a-button size="small" @click="() => selectRecent(60)">近 60 天</a-button>
-              <a-button size="small" @click="() => selectRecent(30)">近 30 天</a-button>
-              <a-button size="small" @click="() => selectRecent(7)">近 7 天</a-button>
-            </a-input-group>
-          </a-space>
-        </template>
-      </a-range-picker>
-    </a-space>
+    <a-row type="flex" justify="end" :gutter="[8, 8]" :style="{ marginTop: '32px' }">
+      <a-col flex="0 1 auto">
+        <a-radio-group v-model:value="showTotal">
+          <a-radio-button :value="true">合计</a-radio-button>
+          <a-radio-button :value="false">分项</a-radio-button>
+        </a-radio-group>
+      </a-col>
+      <a-col flex="0 1 auto">
+        <a-select v-model:value="visibleTypes" :options="selectableTypes" mode="multiple" :max-tag-count="1"
+          :style="{ width: '15em' }" />
+      </a-col>
+      <a-col flex="0 1 auto">
+        <a-range-picker v-model:value="range" :disabled-date="disabledDate">
+          <template #renderExtraFooter>
+            <a-space>
+              <a-button size="small" @click="() => range = undefined">显示所有</a-button>
+              <a-input-group compact>
+                <a-button size="small" @click="() => selectRecent(60)">近 60 天</a-button>
+                <a-button size="small" @click="() => selectRecent(30)">近 30 天</a-button>
+                <a-button size="small" @click="() => selectRecent(7)">近 7 天</a-button>
+              </a-input-group>
+            </a-space>
+          </template>
+        </a-range-picker>
+      </a-col>
+    </a-row>
   </a-card>
 </template>
 
@@ -154,11 +160,3 @@ watch(items, () => {
   });
 });
 </script>
-
-<style lang="scss" module>
-.options {
-  width: 100%;
-  margin-top: 32px;
-  justify-content: flex-end;
-}
-</style>
