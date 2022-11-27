@@ -115,7 +115,7 @@ const { plotElement, plot } = useL7Plot<Dot, DotOptions>((el) => new Dot(el, {
   },
   color: {
     field: 'count',
-    value: ['#e7b155', '#f36d34', '#d52b2b', '#800505', '#420101'],
+    value: ['#FFCB33', '#FF8C00', '#E6450F', '#B22C00', '#510000'],
     scale: { type: 'quantize' }
   },
   style: {
