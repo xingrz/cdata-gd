@@ -74,7 +74,7 @@ const selectableCities = computed(() => [
   })),
 ]);
 
-const streets = ref<Record<string, ILocation>>({});
+const streets = ref<Record<string, ILocation> | null>(null);
 onMounted(async () => {
   streets.value = await http.get(`./data/streets.json`).json();
 });

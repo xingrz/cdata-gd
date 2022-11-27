@@ -5,28 +5,32 @@
         <div ref="plotElement" :style="{ height: '85vh' }" />
       </a-col>
       <a-col :xs="24" :md="6">
-        <a-range-picker v-model:value="range" :disabled-date="isUnavailable.bind(null, props.reports)"
-          :style="{ width: '100%' }">
-          <template #renderExtraFooter>
-            <a-space>
-              <a-button size="small" @click="() => range = recent(props.reports, 1)" type="primary">昨天</a-button>
-              <a-input-group compact>
-                <a-button size="small" @click="() => range = recent(props.reports, 60)">近 60 天</a-button>
-                <a-button size="small" @click="() => range = recent(props.reports, 30)">近 30 天</a-button>
-                <a-button size="small" @click="() => range = recent(props.reports, 7)">近 7 天</a-button>
-              </a-input-group>
-            </a-space>
-          </template>
-        </a-range-picker>
-        <a-divider />
-        <a-checkbox-group v-model:value="visibleTypes" :options="selectableTypes" :class="$style.selections" />
-        <a-divider />
-        <a-checkbox-group v-model:value="visibleSources" :options="selectableSources" :class="$style.selections" />
-        <a-divider />
-        <div :class="$style.notes">
-          <p>标记仅示意新增数字所属街道，并不代表感染者准确位置。</p>
-          <p>数据来源：<a href="http://wjw.gz.gov.cn/ztzl/xxfyyqfk/yqtb/index.html" target="_blank" noreferrer>广州市卫健委</a></p>
-        </div>
+        <template v-if="props.streets && props.reports">
+          <a-range-picker v-model:value="range" :disabled-date="isUnavailable.bind(null, props.reports)"
+            :style="{ width: '100%' }">
+            <template #renderExtraFooter>
+              <a-space>
+                <a-button size="small" @click="() => range = recent(props.reports, 1)" type="primary">昨天</a-button>
+                <a-input-group compact>
+                  <a-button size="small" @click="() => range = recent(props.reports, 60)">近 60 天</a-button>
+                  <a-button size="small" @click="() => range = recent(props.reports, 30)">近 30 天</a-button>
+                  <a-button size="small" @click="() => range = recent(props.reports, 7)">近 7 天</a-button>
+                </a-input-group>
+              </a-space>
+            </template>
+          </a-range-picker>
+          <a-divider />
+          <a-checkbox-group v-model:value="visibleTypes" :options="selectableTypes" :class="$style.selections" />
+          <a-divider />
+          <a-checkbox-group v-model:value="visibleSources" :options="selectableSources" :class="$style.selections" />
+          <a-divider />
+          <div :class="$style.notes">
+            <p>标记仅示意新增数字所属街道，并不代表感染者准确位置。</p>
+            <p>数据来源：<a href="http://wjw.gz.gov.cn/ztzl/xxfyyqfk/yqtb/index.html" target="_blank" noreferrer>广州市卫健委</a>
+            </p>
+          </div>
+        </template>
+        <a-skeleton v-else active />
       </a-col>
     </a-row>
   </a-card>
@@ -47,7 +51,7 @@ import { useL7Plot } from '@/composables/usePlot';
 
 const props = defineProps<{
   reports: IReport[] | null;
-  streets: Record<string, ILocation>;
+  streets: Record<string, ILocation> | null;
 }>();
 
 const range = ref<[Dayjs, Dayjs]>();
@@ -71,7 +75,7 @@ const visibleTypes = ref<IReportType[]>([
 const visibleData = computed(() => (props.reports || [])
   .filter((report) => withIn(report, range.value))
   .flatMap((report) => visibleTypes.value.flatMap((type) => report.data[type]))
-  .filter((item) => props.streets[item.street]));
+  .filter((item) => props.streets?.[item.street]));
 
 const sources = computed(() => uniq(visibleData.value.map((item) => item.source)));
 
@@ -89,7 +93,7 @@ const items = computed(() => {
     items[item.street]++;
   }
   return Object.keys(items).map((name) => {
-    const street = props.streets[name];
+    const street = props.streets![name];
     return { ...street, name, count: items[name] };
   });
 });
