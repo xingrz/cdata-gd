@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import http from 'ky';
-import { findLast, isUndefined, range } from 'lodash';
+import { findLast, isUndefined, range } from 'lodash-es';
 
 export default async function loadDataset<T>(path: string, depth = 60): Promise<T[]> {
   let dataset: T[] = [];

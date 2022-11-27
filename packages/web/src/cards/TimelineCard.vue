@@ -13,14 +13,14 @@
           :style="{ width: '24em' }" />
       </a-col>
       <a-col flex="0 1 auto">
-        <a-range-picker v-model:value="range" :disabled-date="disabledDate">
+        <a-range-picker v-model:value="range" :disabled-date="isUnavailable.bind(null, props.stats)">
           <template #renderExtraFooter>
             <a-space>
               <a-button size="small" @click="() => range = undefined">显示所有</a-button>
               <a-input-group compact>
-                <a-button size="small" @click="() => selectRecent(60)">近 60 天</a-button>
-                <a-button size="small" @click="() => selectRecent(30)">近 30 天</a-button>
-                <a-button size="small" @click="() => selectRecent(7)">近 7 天</a-button>
+                <a-button size="small" @click="() => range = recent(props.stats, 60)">近 60 天</a-button>
+                <a-button size="small" @click="() => range = recent(props.stats, 30)">近 30 天</a-button>
+                <a-button size="small" @click="() => range = recent(props.stats, 7)">近 7 天</a-button>
               </a-input-group>
             </a-space>
           </template>
@@ -34,11 +34,10 @@
 import { computed, ref, watch } from 'vue';
 import type { SelectProps } from 'ant-design-vue';
 import { Line, type LineOptions } from '@antv/g2plot';
-import { first, last } from 'lodash';
 import type { Dayjs } from 'dayjs';
 import type { IIncreaseType, IStats } from '@cdata/common/types/stats';
 
-import toDay from '@/utils/toDay';
+import { isUnavailable, recent, withIn } from '@/utils/day';
 import sumOf from '@/utils/sumOf';
 
 import { useG2Plot } from '@/composables/usePlot';
@@ -50,22 +49,9 @@ const props = defineProps<{
 
 const range = ref<[Dayjs, Dayjs]>();
 
-function disabledDate(current: Dayjs): boolean {
-  if (!props.stats?.length) return true;
-  const start = toDay(first(props.stats)!.time);
-  const end = toDay(last(props.stats)!.time);
-  return current < start || current > end;
-}
-
-function selectRecent(days: number): void {
-  const end = toDay(last(props.stats)!.time);
-  const start = end.subtract(days - 1, 'days');
-  range.value = [start, end];
-}
-
 watch(props, () => {
   if (!range.value && props.stats) {
-    selectRecent(30);
+    range.value = recent(props.stats, 30);
   }
 });
 
@@ -100,12 +86,7 @@ interface IItem {
 }
 
 const items = computed(() => (props.stats || [])
-  .filter((data) => {
-    if (!range.value) return true;
-    const [start, end] = range.value;
-    const current = toDay(data.time);
-    return current >= start && current <= end;
-  })
+  .filter((data) => withIn(data, range.value))
   .flatMap((data): IItem | IItem[] => {
     const items = visibleTypes.value.map((type) => {
       const sum = props.city ? (data.data[type][props.city] || 0) : sumOf(data.data[type]);

@@ -5,14 +5,15 @@
         <div ref="plotElement" :style="{ height: '85vh' }" />
       </a-col>
       <a-col :xs="24" :md="6">
-        <a-range-picker v-model:value="range" :disabled-date="disabledDate" :style="{ width: '100%' }">
+        <a-range-picker v-model:value="range" :disabled-date="isUnavailable.bind(null, props.reports)"
+          :style="{ width: '100%' }">
           <template #renderExtraFooter>
             <a-space>
-              <a-button size="small" @click="() => selectRecent(1)" type="primary">昨天</a-button>
+              <a-button size="small" @click="() => range = recent(props.reports, 1)" type="primary">昨天</a-button>
               <a-input-group compact>
-                <a-button size="small" @click="() => selectRecent(60)">近 60 天</a-button>
-                <a-button size="small" @click="() => selectRecent(30)">近 30 天</a-button>
-                <a-button size="small" @click="() => selectRecent(7)">近 7 天</a-button>
+                <a-button size="small" @click="() => range = recent(props.reports, 60)">近 60 天</a-button>
+                <a-button size="small" @click="() => range = recent(props.reports, 30)">近 30 天</a-button>
+                <a-button size="small" @click="() => range = recent(props.reports, 7)">近 7 天</a-button>
               </a-input-group>
             </a-space>
           </template>
@@ -36,11 +37,11 @@ import { computed, ref, watch } from 'vue';
 import type { SelectProps } from 'ant-design-vue';
 import { Dot, type DotOptions } from '@antv/l7plot';
 import type { Dayjs } from 'dayjs';
-import { first, last, uniq } from 'lodash';
+import { uniq } from 'lodash-es';
 import type { IReport, IReportType } from '@cdata/common/types/report';
 import type { ILocation } from '@cdata/common/types/location';
 
-import toDay from '@/utils/toDay';
+import { isUnavailable, recent, withIn } from '@/utils/day';
 
 import { useL7Plot } from '@/composables/usePlot';
 
@@ -51,22 +52,9 @@ const props = defineProps<{
 
 const range = ref<[Dayjs, Dayjs]>();
 
-function disabledDate(current: Dayjs): boolean {
-  if (!props.reports?.length) return true;
-  const start = toDay(first(props.reports)!.time);
-  const end = toDay(last(props.reports)!.time);
-  return current < start || current > end;
-}
-
-function selectRecent(days: number): void {
-  const end = toDay(last(props.reports)!.time);
-  const start = end.subtract(days - 1, 'days');
-  range.value = [start, end];
-}
-
 watch(props, () => {
   if (!range.value && props.reports) {
-    selectRecent(1);
+    range.value = recent(props.reports, 1);
   }
 });
 
@@ -81,12 +69,7 @@ const visibleTypes = ref<IReportType[]>([
 ]);
 
 const visibleData = computed(() => (props.reports || [])
-  .filter((report) => {
-    if (!range.value) return true;
-    const [start, end] = range.value;
-    const current = toDay(report.time);
-    return current >= start && current <= end;
-  })
+  .filter((report) => withIn(report, range.value))
   .flatMap((report) => visibleTypes.value.flatMap((type) => report.data[type]))
   .filter((item) => props.streets[item.street]));
 
