@@ -15,7 +15,7 @@ export default function parseReport(input: string): IReportData {
   let type: keyof IReportData | undefined;
   for (const line of input.split('\n')) {
     let match: RegExpMatchArray | null;
-    if (match = line.match(/本土确诊病例([\d\-、 ]+)：居住在([^。，]+)/)) {
+    if (match = line.match(/本土确诊病例([\d\-、 ]+).*居住在([^。，]+)/)) {
       type = '本土确诊病例';
       const ids = expand(match[1])
       push(data['本土确诊病例'], 'street', match[2], ids);
@@ -29,12 +29,12 @@ export default function parseReport(input: string): IReportData {
       } else {
         push(data['本土确诊病例'], 'source', match[3], expand(match[2]));
       }
-    } else if (match = line.match(/本土确诊病例([\d\-、 ]+)：在(集中隔离场所[^。，]+?)(中)?发现/)) {
+    } else if (match = line.match(/本土确诊病例([\d\-、 ]+).*在(集中隔离场所[^。，]+?)(中)?发现/)) {
       type = '本土确诊病例';
       const ids = expand(match[1]);
       push(data['本土确诊病例'], 'street', '集中隔离场所', ids);
       push(data['本土确诊病例'], 'source', match[2], ids);
-    } else if (match = line.match(/本土无症状感染者([\d\-、 ]+)：居住在([^。，]+)/)) {
+    } else if (match = line.match(/本土无症状感染者([\d\-、 ]+).*居住在([^。，]+)/)) {
       type = '本土无症状感染者';
       const ids = expand(match[1])
       push(data['本土无症状感染者'], 'street', match[2], ids);
@@ -44,7 +44,7 @@ export default function parseReport(input: string): IReportData {
     } else if (match = line.match(/上述无症状感染者([\d\-、 ]+).*在([^。，]+?)(中)?发现/)) {
       type = '本土无症状感染者';
       push(data['本土无症状感染者'], 'source', match[2], expand(match[1]));
-    } else if (match = line.match(/本土无症状感染者([\d\-、 ]+)：在(集中隔离场所[^。，]+?)(中)?发现/)) {
+    } else if (match = line.match(/本土无症状感染者([\d\-、 ]+).*在(集中隔离场所[^。，]+?)(中)?发现/)) {
       type = '本土无症状感染者';
       const ids = expand(match[1]);
       push(data['本土无症状感染者'], 'street', '集中隔离场所', ids);
