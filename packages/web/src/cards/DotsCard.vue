@@ -99,6 +99,7 @@ const { plotElement, plot } = useL7Plot<Dot, DotOptions>((el) => new Dot(el, {
   autoFit: true,
   map: {
     type: 'amap',
+    maxZoom: 13,
   },
   source: {
     data: items.value,
