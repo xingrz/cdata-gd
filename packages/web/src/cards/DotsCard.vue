@@ -24,11 +24,11 @@
           <a-divider />
           <a-checkbox-group v-model:value="visibleSources" :options="selectableSources" :class="$style.selections" />
           <a-divider />
-          <div :class="$style.notes">
+          <a-typography-text type="secondary" :style="{ fontSize: '90%' }">
             <p>标记仅示意新增数字所属街道，并不代表感染者准确位置。</p>
             <p>数据来源：<a href="http://wjw.gz.gov.cn/ztzl/xxfyyqfk/yqtb/index.html" target="_blank" noreferrer>广州市卫健委</a>
             </p>
-          </div>
+          </a-typography-text>
         </template>
         <a-skeleton v-else active />
       </a-col>
@@ -151,10 +151,5 @@ watch(items, () => {
   flex-direction: column;
   max-height: 400px;
   overflow-y: scroll;
-}
-
-.notes {
-  font-size: 90%;
-  opacity: 0.5;
 }
 </style>

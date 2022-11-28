@@ -25,10 +25,17 @@
         </a-col>
       </a-row>
       <footer :class="$style.footer">
-        数据来源：
-        <a href="https://weibo.com/gdjkjy" target="_blank" noreferrer>@健康广东</a>
-        <a-divider type="vertical" />
-        <a href="http://wjw.gz.gov.cn/ztzl/xxfyyqfk/yqtb/index.html" target="_blank" noreferrer>广州市卫健委</a>
+        <a-typography-text type="secondary">
+          <p>本页面数据由程序自动整理，不作参考依据。原始数据详见<a href="https://weibo.com/gdjkjy" target="_blank" noreferrer>@健康广东</a>或<a
+              href="http://wjw.gz.gov.cn/ztzl/xxfyyqfk/yqtb/index.html" target="_blank" noreferrer>广州市卫健委</a>。</p>
+          <p>
+            <a href="https://github.com/xingrz/cdata-gd" target="_blank">源码</a>
+            <a-divider type="vertical" />
+            <a href="https://github.com/xingrz/cdata-gd/issues" target="_blank">问题反馈</a>
+            <a-divider type="vertical" />
+            <a href="https://github.com/xingrz/cdata-gd/blob/master/LICENSE" target="_blank">开源协议</a>
+          </p>
+        </a-typography-text>
       </footer>
     </div>
   </a-config-provider>
@@ -90,9 +97,18 @@ onMounted(async () => {
   padding: 16px;
 }
 
+:global(.ant-typography p) {
+  & {
+    margin-bottom: 0.5em;
+  }
+
+  &:last-of-type {
+    margin-bottom: 0;
+  }
+}
+
 .footer {
   padding: 32px 0 16px;
   font-size: 90%;
-  opacity: 0.5;
 }
 </style>
