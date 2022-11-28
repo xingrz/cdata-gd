@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue';
 
 import type { Plot as G2Plot } from '@antv/g2plot';
 import type { PickOptions as G2PickOptions } from '@antv/g2plot/lib/core/plot';
@@ -24,6 +24,23 @@ export function useG2Plot<P extends G2Plot<O>, O extends G2PickOptions>
     plot.value?.destroy();
   });
 
+  return { plotElement, plot };
+}
+
+export function useG2TinyPlot<P extends G2Plot<O>, O extends G2PickOptions>
+  (data: Ref<number[]>, creator: (element: HTMLElement, data: number[]) => P): {
+    plotElement: Ref<HTMLElement | undefined>;
+    plot: Ref<P | undefined>;
+  } {
+  const plotElement = ref<HTMLElement>();
+  const plot = ref<P>();
+  watch([plotElement, data], ([element, data], _oldValue, onCleanup) => {
+    if (element) {
+      plot.value = creator(element, data);
+      plot.value.render();
+      onCleanup(() => plot.value?.destroy());
+    }
+  });
   return { plotElement, plot };
 }
 
