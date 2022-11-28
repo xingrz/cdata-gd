@@ -21,7 +21,7 @@
           <timeline-card :stats="stats" :city="visibleCity" />
         </a-col>
         <a-col :xs="24">
-          <dots-card :reports="reports" :streets="streets" />
+          <district-card :reports="reports" :streets="streets" />
         </a-col>
       </a-row>
       <footer :class="$style.footer">
@@ -53,7 +53,7 @@ import type { ILocation } from '@cdata/common/types/location';
 
 import StatsCard from '@/cards/StatsCard.vue';
 import TimelineCard from '@/cards/TimelineCard.vue';
-import DotsCard from './cards/DotsCard.vue';
+import DistrictCard from './cards/DistrictCard.vue';
 
 import loadDataset from '@/utils/loadDataset';
 
