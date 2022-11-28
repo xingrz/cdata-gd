@@ -45,6 +45,7 @@
 import { computed, onMounted, ref } from 'vue';
 import zh_CN from 'ant-design-vue/es/locale/zh_CN';
 import http from 'ky';
+import { uniq } from 'lodash';
 
 import type { IStats } from '@cdata/common/types/stats';
 import type { IReport } from '@cdata/common/types/report';
@@ -61,17 +62,9 @@ onMounted(async () => {
   stats.value = await loadDataset('stats');
 });
 
-const cities = computed(() => {
-  const cities: Record<string, boolean> = {};
-  for (const stat of (stats.value || [])) {
-    for (const section of Object.values(stat.data)) {
-      for (const city of Object.keys(section)) {
-        cities[city] = true;
-      }
-    }
-  }
-  return Object.keys(cities);
-});
+const cities = computed(() => uniq((stats.value || [])
+  .flatMap((stat) => Object.values(stat.data))
+  .flatMap((section) => Object.keys(section))));
 
 const visibleCity = ref<string | null>(null);
 const selectableCities = computed(() => [
