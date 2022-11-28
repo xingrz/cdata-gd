@@ -2,7 +2,7 @@
   <a-card>
     <a-row :gutter="[16, 16]">
       <a-col :xs="24" :md="18">
-        <div ref="plotElement" :style="{ height: '85vh' }" />
+        <div ref="dotEl" :style="{ height: '85vh' }" />
       </a-col>
       <a-col :xs="24" :md="6">
         <template v-if="props.streets && props.reports">
@@ -39,7 +39,7 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import type { SelectProps } from 'ant-design-vue';
-import { Dot, type DotOptions } from '@antv/l7plot';
+import { Dot } from '@antv/l7plot';
 import type { Dayjs } from 'dayjs';
 import { uniq } from 'lodash-es';
 import type { IReport, IReportType } from '@cdata/common/types/report';
@@ -47,7 +47,7 @@ import type { ILocation } from '@cdata/common/types/location';
 
 import { isUnavailable, recent, withIn } from '@/utils/day';
 
-import { useL7Plot } from '@/composables/usePlot';
+import usePlot from '@/composables/usePlot';
 
 const props = defineProps<{
   reports: IReport[] | null;
@@ -85,7 +85,12 @@ const selectableSources = computed<SelectProps['options']>(() => sources.value
 const visibleSources = ref<string[]>([]);
 watch(sources, () => visibleSources.value = sources.value);
 
-const items = computed(() => {
+type IItem = ILocation & {
+  name: string;
+  count: number;
+};
+
+const items = computed<IItem[]>(() => {
   const items: Record<string, number> = {};
   for (const item of visibleData.value) {
     if (!visibleSources.value.includes(item.source)) continue;
@@ -98,8 +103,7 @@ const items = computed(() => {
   });
 });
 
-const { plotElement, plot } = useL7Plot<Dot, DotOptions>((el) => new Dot(el, {
-  height: 500,
+const { el: dotEl } = usePlot(items, (el, data) => new Dot(el, {
   autoFit: true,
   map: {
     type: 'amap',
@@ -107,7 +111,7 @@ const { plotElement, plot } = useL7Plot<Dot, DotOptions>((el) => new Dot(el, {
     maxZoom: 13,
   },
   source: {
-    data: items.value,
+    data: data,
     parser: { type: 'json', x: 'lng', y: 'lat' },
   },
   size: {
@@ -138,10 +142,6 @@ const { plotElement, plot } = useL7Plot<Dot, DotOptions>((el) => new Dot(el, {
     position: 'bottomleft',
   },
 }));
-
-watch(items, () => {
-  plot.value?.changeData(items.value);
-});
 </script>
 
 <style lang="scss" module>
