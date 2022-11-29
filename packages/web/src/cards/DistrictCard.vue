@@ -5,7 +5,13 @@
         <div ref="dotEl" :style="{ height: '85vh' }" />
       </a-col>
       <a-col :xs="24" :md="6">
-        <template v-if="props.streets && props.reports">
+        <template v-if="props.streets == null || props.reports == null">
+          <a-skeleton active />
+        </template>
+        <template v-else-if="props.reports.length == 0">
+          <a-alert message="暂无该城市的数据" type="error" />
+        </template>
+        <template v-else>
           <a-range-picker v-model:value="range" :disabled-date="isUnavailable.bind(null, props.reports)"
             :style="{ width: '100%' }">
             <template #renderExtraFooter>
@@ -30,7 +36,6 @@
             </p>
           </a-typography-text>
         </template>
-        <a-skeleton v-else active />
       </a-col>
     </a-row>
   </a-card>

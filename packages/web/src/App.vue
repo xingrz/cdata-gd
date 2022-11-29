@@ -20,7 +20,7 @@
         <a-col :xs="24">
           <timeline-card :stats="stats" :city="visibleCity" />
         </a-col>
-        <a-col :xs="24">
+        <a-col :xs="24" v-if="visibleCity">
           <district-card :reports="reports" :streets="streets" />
         </a-col>
       </a-row>
@@ -93,13 +93,20 @@ watch(visibleCity, (city) => {
 });
 
 const streets = ref<Record<string, ILocation> | null>(null);
-onMounted(async () => {
-  streets.value = await http.get(`./data/streets/gz.json`).json();
-});
-
 const reports = ref<IReport[] | null>(null);
-onMounted(async () => {
-  reports.value = await loadDataset('reports/gz');
+
+watch(visibleCity, async (city) => {
+  streets.value = null;
+  reports.value = null;
+  if (city) {
+    try {
+      streets.value = await http.get(`./data/streets/${city}.json`).json();
+      reports.value = await loadDataset(`reports/${city}`);
+    } catch (e) {
+      streets.value = {};
+      reports.value = [];
+    }
+  }
 });
 </script>
 
