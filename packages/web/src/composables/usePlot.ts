@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue';
+import { onBeforeUnmount, ref, watch, type Ref } from 'vue';
 import { Plot as G2Plot } from '@antv/g2plot';
 
 type PlotCreator<P, T> = (el: HTMLDivElement, data: T[]) => P;
@@ -18,19 +18,21 @@ export default function usePlot<P extends IPlot<T>, T>(data: Ref<T[]>, creator: 
   const el = ref<HTMLDivElement>();
   const plot = ref<P>();
 
-  function render() {
-    if (!el.value || plot.value) return;
-    plot.value = creator(el.value, data.value);
+  watch(el, (el, _oldEl, onCleanup) => {
+    if (!el) return;
+    plot.value = creator(el, data.value);
     if (plot.value instanceof G2Plot) {
       plot.value.render();
     }
-  }
-
-  onMounted(render);
-  watch(el, render);
+    onCleanup(() => {
+      plot.value?.destroy();
+      plot.value = undefined;
+    });
+  });
 
   onBeforeUnmount(() => {
     plot.value?.destroy();
+    plot.value = undefined;
   });
 
   watch(data, (data) => {
