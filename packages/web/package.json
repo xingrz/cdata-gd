@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@nabla/vite-plugin-eslint": "^1.4.1",
+    "@types/fs-extra": "^9.0.13",
     "@types/lodash-es": "^4.17.6",
     "@typescript-eslint/eslint-plugin": "^5.44.0",
     "@typescript-eslint/parser": "^5.44.0",

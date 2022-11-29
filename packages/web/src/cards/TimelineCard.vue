@@ -1,6 +1,6 @@
 <template>
   <a-card>
-    <div ref="plotElement" :style="{ height: '500px' }" />
+    <div ref="lineEl" :style="{ height: '500px' }" />
     <a-row type="flex" justify="end" :gutter="[8, 8]" :style="{ marginTop: '32px' }">
       <a-col flex="0 1 auto">
         <a-radio-group v-model:value="showTotal">
@@ -33,14 +33,14 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import type { SelectProps } from 'ant-design-vue';
-import { Line, type LineOptions } from '@antv/g2plot';
+import { Line } from '@antv/g2plot';
 import type { Dayjs } from 'dayjs';
 import type { IIncreaseType, IStats } from '@cdata/common/types/stats';
 
 import { isUnavailable, recent, withIn } from '@/utils/day';
 import sumOf from '@/utils/sumOf';
 
-import { useG2Plot } from '@/composables/usePlot';
+import usePlot from '@/composables/usePlot';
 
 const props = defineProps<{
   stats: IStats[] | null;
@@ -85,7 +85,7 @@ interface IItem {
   items?: IItem[];
 }
 
-const items = computed(() => (props.stats || [])
+const items = computed<IItem[]>(() => (props.stats || [])
   .filter((data) => withIn(data, range.value))
   .flatMap((data): IItem | IItem[] => {
     const items = visibleTypes.value.map((type) => {
@@ -100,9 +100,9 @@ const items = computed(() => (props.stats || [])
     }
   }));
 
-const { plotElement, plot } = useG2Plot<Line, LineOptions>((el) => new Line(el, {
-  height: 500,
-  data: items.value,
+const { el: lineEl } = usePlot(items, (el, data) => new Line(el, {
+  autoFit: true,
+  data: data,
   xField: 'time',
   yField: 'value',
   seriesField: 'type',
@@ -147,10 +147,4 @@ const { plotElement, plot } = useG2Plot<Line, LineOptions>((el) => new Line(el, 
     },
   },
 }));
-
-watch(items, () => {
-  plot.value?.update({
-    data: items.value,
-  });
-});
 </script>

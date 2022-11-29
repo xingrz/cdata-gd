@@ -1,22 +1,21 @@
-import { onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue';
 
-import type { Plot as G2Plot } from '@antv/g2plot';
-import type { PickOptions as G2PickOptions } from '@antv/g2plot/lib/core/plot';
+import type { Plot as G2Plot, Options as G2Options } from '@antv/g2plot';
 
 import type { Plot as L7Plot } from '@antv/l7plot';
 import type { PlotOptions as L7PlotOptions } from '@antv/l7plot/dist/lib/types/plot';
 
-export function useG2Plot<P extends G2Plot<O>, O extends G2PickOptions>
-  (creator: (element: HTMLElement) => P): {
-    plotElement: Ref<HTMLElement | undefined>;
+export default function usePlot<P extends G2Plot<G2Options> | L7Plot<L7PlotOptions>, T>
+  (data: Ref<T[]>, creator: (el: HTMLDivElement, data: T[]) => P): {
+    el: Ref<HTMLElement | undefined>;
     plot: Ref<P | undefined>;
   } {
-  const plotElement = ref<HTMLElement>();
+  const el = ref<HTMLDivElement>();
   const plot = ref<P>();
 
   onMounted(() => {
-    if (!plotElement.value) return;
-    plot.value = creator(plotElement.value);
+    if (!el.value) return;
+    plot.value = creator(el.value, data.value);
     plot.value.render();
   });
 
@@ -24,25 +23,9 @@ export function useG2Plot<P extends G2Plot<O>, O extends G2PickOptions>
     plot.value?.destroy();
   });
 
-  return { plotElement, plot };
-}
-
-export function useL7Plot<P extends L7Plot<O>, O extends L7PlotOptions>
-  (creator: (element: HTMLDivElement) => P): {
-    plotElement: Ref<HTMLElement | undefined>;
-    plot: Ref<P | undefined>;
-  } {
-  const plotElement = ref<HTMLDivElement>();
-  const plot = ref<P>();
-
-  onMounted(() => {
-    if (!plotElement.value) return;
-    plot.value = creator(plotElement.value);
+  watch(data, (data) => {
+    plot.value?.changeData(data);
   });
 
-  onBeforeUnmount(() => {
-    plot.value?.destroy();
-  });
-
-  return { plotElement, plot };
+  return { el, plot };
 }
