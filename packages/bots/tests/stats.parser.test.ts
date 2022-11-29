@@ -2,7 +2,7 @@ import { basename, join } from 'path';
 import { readdir, readFile } from 'fs-extra';
 import { parse } from 'yaml';
 
-import parseStats from '../src/parsers/parseStats';
+import { parseStats } from '../scripts/stats/parser';
 
 test('parseStats', async () => {
   const fixturesDir = join(__dirname, 'fixtures', 'stats');

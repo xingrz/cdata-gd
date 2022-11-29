@@ -1,7 +1,7 @@
 import { range } from 'lodash-es';
 import { IReportData, IReportItem } from '@cdata/common/types/report';
 
-export default function parseReport(input: string): IReportData {
+export function parseReport(input: string): IReportData {
   const data: IReportData = {
     '本土确诊病例': [],
     '本土无症状感染者': [],

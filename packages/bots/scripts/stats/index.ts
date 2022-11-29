@@ -3,8 +3,8 @@ import fs from 'fs-extra';
 import { stringify } from 'yaml';
 import { CookieJar } from 'tough-cookie';
 
-import { fetchLongText, fetchWeibo, genVisitor } from './fetchers/weibo';
-import parseStats from './parsers/parseStats';
+import { fetchLongText, fetchWeibo, genVisitor } from '../common/weibo';
+import { parseStats } from './parser';
 
 const statsDir = resolve('..', '..', 'data', 'stats');
 await fs.ensureDir(statsDir);

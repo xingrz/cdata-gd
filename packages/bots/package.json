@@ -4,8 +4,7 @@
     "private": true,
     "scripts": {
         "test": "jest",
-        "fetch:stats": "node --no-warnings --experimental-specifier-resolution=node --loader ts-node/esm src/stats.ts",
-        "fetch:reports": "node --no-warnings --experimental-specifier-resolution=node --loader ts-node/esm src/reports.ts"
+        "script": "node --no-warnings --experimental-specifier-resolution=node --loader ts-node/esm"
     },
     "dependencies": {
         "cheerio": "^1.0.0-rc.12",
