@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import zh_CN from 'ant-design-vue/es/locale/zh_CN';
 import http from 'ky';
 import { uniq } from 'lodash';
@@ -73,6 +73,24 @@ const selectableCities = computed(() => [
     label: city, value: city
   })),
 ]);
+
+watch(cities, (cities) => {
+  const url = new URL(window.location.href);
+  const city = url.searchParams.get('c');
+  if (city && cities.includes(city) && visibleCity.value != city) {
+    visibleCity.value = city;
+  }
+});
+
+watch(visibleCity, (city) => {
+  const url = new URL(window.location.href);
+  if (city) {
+    url.searchParams.set('c', city);
+  } else {
+    url.searchParams.delete('c');
+  }
+  history.replaceState(null, '', url);
+});
 
 const streets = ref<Record<string, ILocation> | null>(null);
 onMounted(async () => {
