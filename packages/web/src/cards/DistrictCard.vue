@@ -26,6 +26,8 @@
             </template>
           </a-range-picker>
           <a-divider />
+          <div ref="barEl" :style="{ height: '150px' }" />
+          <a-divider />
           <a-checkbox-group v-model:value="visibleTypes" :options="selectableTypes" :class="$style.selections" />
           <a-divider />
           <a-checkbox-group v-model:value="visibleSources" :options="selectableSources" :class="$style.selections" />
@@ -44,9 +46,10 @@
 <script lang="ts" setup>
 import { computed, ref, watch } from 'vue';
 import type { SelectProps } from 'ant-design-vue';
+import { Bar } from '@antv/g2plot';
 import { Dot } from '@antv/l7plot';
 import type { Dayjs } from 'dayjs';
-import { uniq } from 'lodash-es';
+import { sortBy, uniq } from 'lodash-es';
 import type { IReport, IReportType } from '@cdata/common/types/report';
 import type { ILocation } from '@cdata/common/types/location';
 
@@ -145,6 +148,21 @@ const { el: dotEl } = usePlot(items, (el, data) => new Dot(el, {
   },
   legend: {
     position: 'bottomleft',
+  },
+}));
+
+const top = computed(() => sortBy(items.value, 'count').reverse().slice(0, 5));
+
+const { el: barEl } = usePlot(top, (el, data) => new Bar(el, {
+  autoFit: true,
+  data: data,
+  yField: 'name',
+  xField: 'count',
+  meta: {
+    count: { alias: '总新增' },
+  },
+  label: {
+    position: 'middle',
   },
 }));
 </script>
