@@ -76,12 +76,12 @@ const selectableCities = computed(() => [
 
 const streets = ref<Record<string, ILocation> | null>(null);
 onMounted(async () => {
-  streets.value = await http.get(`./data/streets.json`).json();
+  streets.value = await http.get(`./data/streets/gz.json`).json();
 });
 
 const reports = ref<IReport[] | null>(null);
 onMounted(async () => {
-  reports.value = await loadDataset('reports');
+  reports.value = await loadDataset('reports/gz');
 });
 </script>
 

@@ -10,8 +10,10 @@ for (const file of await fs.readdir(join(distDir, 'stats'))) {
   await fs.utimes(join(distDir, 'stats', file), time, time);
 }
 
-for (const file of await fs.readdir(join(distDir, 'reports'))) {
-  const name = basename(file, '.json');
-  const time = dayOf(name).add(1, 'day').toDate();
-  await fs.utimes(join(distDir, 'reports', file), time, time);
+for (const city of await fs.readdir(join(distDir, 'reports'))) {
+  for (const file of await fs.readdir(join(distDir, 'reports', city))) {
+    const name = basename(file, '.json');
+    const time = dayOf(name).add(1, 'day').toDate();
+    await fs.utimes(join(distDir, 'reports', city, file), time, time);
+  }
 }

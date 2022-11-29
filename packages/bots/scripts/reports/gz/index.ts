@@ -1,6 +1,7 @@
 import { join, resolve } from 'path';
 import fs from 'fs-extra';
 import { parse, stringify } from 'yaml';
+import _ from 'lodash';
 
 import { geocode } from '../../common/qqlbs';
 import { fetchArticle, fetchIndex } from './fetcher';
@@ -14,8 +15,11 @@ const MAX_FETCH = 30;
 const dataDir = resolve('..', '..', 'data');
 await fs.ensureDir(dataDir);
 
-const reportsDir = join(dataDir, 'reports');
+const reportsDir = join(dataDir, 'reports', 'gz');
 await fs.ensureDir(reportsDir);
+
+const streetsDir = join(dataDir, 'streets');
+await fs.ensureDir(streetsDir);
 
 const streetsToResolve: Record<string, boolean> = {};
 
@@ -59,7 +63,7 @@ for (const item of (await fetchIndex()).slice(0, MAX_FETCH)) {
   }
 }
 
-const streetsFile = join(dataDir, 'streets.yml');
+const streetsFile = join(streetsDir, 'gz.yml');
 const streets: Record<string, ILocation> = await fs.pathExists(streetsFile)
   ? parse(await fs.readFile(streetsFile, 'utf-8'))
   : {};
@@ -76,4 +80,5 @@ for (const name of Object.keys(streetsToResolve)) {
   }
 }
 
-await fs.outputFile(streetsFile, stringify(streets));
+const sorted = _(streets).toPairs().sortBy(0).fromPairs().value();
+await fs.outputFile(streetsFile, stringify(sorted));
