@@ -15,7 +15,7 @@ const MAX_FETCH = 30;
 const dataDir = resolve('..', '..', 'data');
 await fs.ensureDir(dataDir);
 
-const reportsDir = join(dataDir, 'reports', 'gz');
+const reportsDir = join(dataDir, 'reports', '广州');
 await fs.ensureDir(reportsDir);
 
 const streetsDir = join(dataDir, 'streets');
@@ -63,7 +63,7 @@ for (const item of (await fetchIndex()).slice(0, MAX_FETCH)) {
   }
 }
 
-const streetsFile = join(streetsDir, 'gz.yml');
+const streetsFile = join(streetsDir, '广州.yml');
 const streets: Record<string, ILocation> = await fs.pathExists(streetsFile)
   ? parse(await fs.readFile(streetsFile, 'utf-8'))
   : {};
