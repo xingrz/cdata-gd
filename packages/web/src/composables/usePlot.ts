@@ -1,25 +1,33 @@
 import { onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue';
+import { Plot as G2Plot } from '@antv/g2plot';
 
-import { Plot as G2Plot, type Options as G2Options } from '@antv/g2plot';
+type PlotCreator<P, T> = (el: HTMLDivElement, data: T[]) => P;
 
-import type { Plot as L7Plot } from '@antv/l7plot';
-import type { PlotOptions as L7PlotOptions } from '@antv/l7plot/dist/lib/types/plot';
+interface PlotRefs<P> {
+  el: Ref<HTMLDivElement | undefined>;
+  plot: Ref<P | undefined>;
+}
 
-export default function usePlot<P extends G2Plot<G2Options> | L7Plot<L7PlotOptions>, T>
-  (data: Ref<T[]>, creator: (el: HTMLDivElement, data: T[]) => P): {
-    el: Ref<HTMLElement | undefined>;
-    plot: Ref<P | undefined>;
-  } {
+interface IPlot<T> {
+  render(): void;
+  destroy(): void;
+  changeData(data: T[]): void;
+}
+
+export default function usePlot<P extends IPlot<T>, T>(data: Ref<T[]>, creator: PlotCreator<P, T>): PlotRefs<P> {
   const el = ref<HTMLDivElement>();
   const plot = ref<P>();
 
-  onMounted(() => {
-    if (!el.value) return;
+  function render() {
+    if (!el.value || plot.value) return;
     plot.value = creator(el.value, data.value);
     if (plot.value instanceof G2Plot) {
       plot.value.render();
     }
-  });
+  }
+
+  onMounted(render);
+  watch(el, render);
 
   onBeforeUnmount(() => {
     plot.value?.destroy();
