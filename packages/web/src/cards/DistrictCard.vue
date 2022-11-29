@@ -1,10 +1,10 @@
 <template>
-  <a-card>
-    <a-row :gutter="[16, 16]">
-      <a-col :xs="24" :md="18">
-        <div ref="dotEl" :style="{ height: '85vh' }" />
-      </a-col>
-      <a-col :xs="24" :md="6">
+  <a-row :gutter="[16, 16]">
+    <a-col :xs="24" :md="18">
+      <div ref="dotEl" :style="{ height: '85vh' }" />
+    </a-col>
+    <a-col :xs="24" :md="6">
+      <a-card>
         <template v-if="props.streets == null || props.reports == null">
           <a-skeleton active />
         </template>
@@ -38,9 +38,9 @@
             </p>
           </a-typography-text>
         </template>
-      </a-col>
-    </a-row>
-  </a-card>
+      </a-card>
+    </a-col>
+  </a-row>
 </template>
 
 <script lang="ts" setup>
