@@ -1,6 +1,6 @@
 import { onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue';
 
-import type { Plot as G2Plot, Options as G2Options } from '@antv/g2plot';
+import { Plot as G2Plot, type Options as G2Options } from '@antv/g2plot';
 
 import type { Plot as L7Plot } from '@antv/l7plot';
 import type { PlotOptions as L7PlotOptions } from '@antv/l7plot/dist/lib/types/plot';
@@ -16,7 +16,9 @@ export default function usePlot<P extends G2Plot<G2Options> | L7Plot<L7PlotOptio
   onMounted(() => {
     if (!el.value) return;
     plot.value = creator(el.value, data.value);
-    plot.value.render();
+    if (plot.value instanceof G2Plot) {
+      plot.value.render();
+    }
   });
 
   onBeforeUnmount(() => {
