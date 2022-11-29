@@ -1,6 +1,6 @@
 import { IIncreaseType, IIncreaseTypes, IStats } from '@cdata/common/types/stats';
 
-export default function parseStats(input: string): IStats {
+export function parseStats(input: string): IStats {
   const result: Partial<IStats> = {};
   const data: Partial<IStats['data']> = {};
 

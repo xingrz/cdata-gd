@@ -60,7 +60,7 @@ jobs:
           path: data
 
       - name: Fetch data
-        run: npm -w @cdata/bots run fetch:stats
+        run: npm -w @cdata/bots run script scripts/stats
 
       - name: Get current time
         uses: gerred/actions/current-time@master

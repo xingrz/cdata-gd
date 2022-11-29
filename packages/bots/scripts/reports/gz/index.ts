@@ -2,9 +2,9 @@ import { join, resolve } from 'path';
 import fs from 'fs-extra';
 import { parse, stringify } from 'yaml';
 
-import { geocode } from './fetchers/qqlbs';
-import { fetchArticle, fetchIndex } from './fetchers/wjwgz';
-import parseReport from './parsers/parseReport';
+import { geocode } from '../../common/qqlbs';
+import { fetchArticle, fetchIndex } from './fetcher';
+import { parseReport } from './parser';
 
 import { IReport } from '@cdata/common/types/report';
 import { ILocation } from '@cdata/common/types/location';
