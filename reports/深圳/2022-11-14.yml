@@ -1,0 +1,13 @@
+{
+  time: 2022-11-14,
+  data:
+    {
+      本土病例:
+        [
+          { street: 宝安区沙井街道, source: 居家隔离医学观察人员 },
+          { street: 罗湖区东晓街道, source: 居家隔离医学观察人员 },
+          { street: 南山区桃源街道, source: 跨区域协查人员 }
+        ]
+    },
+  ref: https://opendata.sz.gov.cn/data/dataSet/toDataDetails/29200_05800007
+}

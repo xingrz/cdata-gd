@@ -1,0 +1,17 @@
+{
+  time: 2022-11-15,
+  data:
+    {
+      本土病例:
+        [
+          { street: 龙岗区宝龙街道, source: 居家隔离医学观察人员 },
+          { street: 龙岗区平湖街道, source: 居家隔离医学观察人员 },
+          { street: 南山区南头街道, source: 集中隔离观察人员 },
+          { street: 坪山区坪山街道, source: 集中隔离观察人员 },
+          { street: 坪山区马峦街道, source: 居家隔离医学观察人员 },
+          { street: 罗湖区东晓街道, source: 居家隔离医学观察人员 },
+          { street: 宝安区西乡街道, source: 集中隔离观察人员 }
+        ]
+    },
+  ref: https://opendata.sz.gov.cn/data/dataSet/toDataDetails/29200_05800007
+}

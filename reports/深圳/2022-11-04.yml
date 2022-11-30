@@ -1,0 +1,15 @@
+{
+  time: 2022-11-04,
+  data:
+    {
+      本土病例:
+        [
+          { street: 南山区粤海街道, source: 集中隔离观察人员 },
+          { street: 南山区粤海街道, source: 集中隔离观察人员 },
+          { street: 南山区粤海街道, source: 集中隔离观察人员 },
+          { street: 南山区南山街道, source: 集中隔离观察人员 },
+          { street: 光明区玉塘街道, source: 非闭环管理的重点人员筛查 }
+        ]
+    },
+  ref: https://opendata.sz.gov.cn/data/dataSet/toDataDetails/29200_05800007
+}

@@ -1,0 +1,5 @@
+{
+  time: 2022-11-08,
+  data: { 本土病例: [ { street: 宝安区福海街道, source: 集中隔离观察人员 } ] },
+  ref: https://opendata.sz.gov.cn/data/dataSet/toDataDetails/29200_05800007
+}

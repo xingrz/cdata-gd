@@ -1,0 +1,21 @@
+{
+  time: 2022-11-02,
+  data:
+    {
+      本土病例:
+        [
+          { street: 南山区南头街道, source: 集中隔离观察人员 },
+          { street: 南山区南头街道, source: 集中隔离观察人员 },
+          { street: 南山区南头街道, source: 集中隔离观察人员 },
+          { street: 南山区南头街道, source: 集中隔离观察人员 },
+          { street: 南山区南头街道, source: 集中隔离观察人员 },
+          { street: 南山区南山街道, source: 集中隔离观察人员 },
+          { street: 南山区沙河街道, source: 集中隔离观察人员 },
+          { street: 南山区蛇口街道, source: 集中隔离观察人员 },
+          { street: 宝安区新安街道, source: 集中隔离观察人员 },
+          { street: 龙华区民治街道, source: 集中隔离观察人员 },
+          { street: 福田区南园街道, source: 社区筛查 }
+        ]
+    },
+  ref: https://opendata.sz.gov.cn/data/dataSet/toDataDetails/29200_05800007
+}
