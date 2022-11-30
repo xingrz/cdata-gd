@@ -21,7 +21,7 @@
           <timeline-card :stats="stats" :city="visibleCity" />
         </a-col>
         <a-col :xs="24" v-if="visibleCity">
-          <district-card :reports="reports" :streets="streets" />
+          <district-card :city="visibleCity" :reports="reports" :streets="streets" />
         </a-col>
       </a-row>
       <footer :class="$style.footer">

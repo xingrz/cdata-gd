@@ -28,14 +28,17 @@
           <a-divider />
           <div ref="barEl" :style="{ height: '150px' }" />
           <a-divider />
-          <a-checkbox-group v-model:value="visibleTypes" :options="selectableTypes" :class="$style.selections" />
-          <a-divider />
+          <template v-if="reportTypes.length > 1">
+            <a-checkbox-group v-model:value="visibleTypes" :options="selectableTypes" :class="$style.selections" />
+            <a-divider />
+          </template>
           <a-checkbox-group v-model:value="visibleSources" :options="selectableSources" :class="$style.selections"
-            :style="{ maxHeight: '190px' }" />
+            :style="{ maxHeight: reportTypes.length > 1 ? '190px' : '250px' }" />
           <a-divider />
           <a-typography-text type="secondary" :style="{ fontSize: '90%' }">
             <p>标记仅示意新增数字所属街道，并不代表感染者准确位置。</p>
-            <p>数据来源：<a href="http://wjw.gz.gov.cn/ztzl/xxfyyqfk/yqtb/index.html" target="_blank" noreferrer>广州市卫健委</a>
+            <p v-if="refUrls[props.city]">
+              数据来源：<a :href="refUrls[props.city].url" target="_blank" noreferrer>{{ refUrls[props.city].name }}</a>
             </p>
           </a-typography-text>
         </template>
@@ -51,7 +54,7 @@ import { Bar } from '@antv/g2plot';
 import { Dot } from '@antv/l7plot';
 import type { Dayjs } from 'dayjs';
 import { sortBy, uniq } from 'lodash-es';
-import type { IReport, IReportType } from '@cdata/common/types/report';
+import type { IReport } from '@cdata/common/types/report';
 import type { ILocation } from '@cdata/common/types/location';
 
 import { isUnavailable, recent, withIn } from '@/utils/day';
@@ -59,6 +62,7 @@ import { isUnavailable, recent, withIn } from '@/utils/day';
 import usePlot from '@/composables/usePlot';
 
 const props = defineProps<{
+  city: string;
   reports: IReport[] | null;
   streets: Record<string, ILocation> | null;
 }>();
@@ -71,22 +75,25 @@ watch(props, () => {
   }
 });
 
-const selectableTypes: SelectProps['options'] & { value: IReportType }[] = [
-  { value: '本土确诊病例', label: '新增本土确诊' },
-  { value: '本土无症状感染者', label: '新增本土无症状' },
-];
+const dataInRange = computed(() => (props.reports || [])
+  .filter((report) => withIn(report, range.value)));
 
-const visibleTypes = ref<IReportType[]>([
-  '本土确诊病例',
-  '本土无症状感染者',
-]);
+const reportTypes = computed(() => uniq(dataInRange.value
+  .flatMap((report) => Object.keys(report.data))));
 
-const visibleData = computed(() => (props.reports || [])
-  .filter((report) => withIn(report, range.value))
+const selectableTypes = computed<SelectProps['options']>(() => reportTypes.value.map((type) => ({
+  label: type,
+  value: type,
+})));
+
+const visibleTypes = ref<string[]>([]);
+watch(reportTypes, () => visibleTypes.value = reportTypes.value);
+
+const dataOfType = computed(() => dataInRange.value
   .flatMap((report) => visibleTypes.value.flatMap((type) => report.data[type]))
   .filter((item) => props.streets?.[item.street]));
 
-const sources = computed(() => uniq(visibleData.value.map((item) => item.source)));
+const sources = computed(() => uniq(dataOfType.value.map((item) => item.source)));
 
 const selectableSources = computed<SelectProps['options']>(() => sources.value
   .map((source) => ({ label: source, value: source })));
@@ -101,7 +108,7 @@ type IItem = ILocation & {
 
 const items = computed<IItem[]>(() => {
   const items: Record<string, number> = {};
-  for (const item of visibleData.value) {
+  for (const item of dataOfType.value) {
     if (!visibleSources.value.includes(item.source)) continue;
     if (typeof items[item.street] == 'undefined') items[item.street] = 0;
     items[item.street]++;
@@ -166,6 +173,16 @@ const { el: barEl } = usePlot(top, (el, data) => new Bar(el, {
     position: 'middle',
   },
 }));
+
+interface RefUrl {
+  name: string;
+  url: string;
+}
+
+const refUrls: Record<string, RefUrl> = {
+  '广州': { name: '广州市卫健委', url: 'http://wjw.gz.gov.cn/ztzl/xxfyyqfk/yqtb/index.html' },
+  '深圳': { name: '深圳市政府数据开放平台', url: 'https://opendata.sz.gov.cn/data/dataSet/toDataDetails/29200_05800007' },
+};
 </script>
 
 <style lang="scss" module>
