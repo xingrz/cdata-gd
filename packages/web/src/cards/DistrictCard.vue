@@ -1,10 +1,10 @@
 <template>
   <a-row :gutter="[16, 16]">
     <a-col :xs="24" :md="18">
-      <div ref="dotEl" :style="{ height: '85vh' }" />
+      <div ref="dotEl" :style="{ height: '750px' }" />
     </a-col>
     <a-col :xs="24" :md="6">
-      <a-card>
+      <a-card :style="{ height: '750px' }">
         <template v-if="props.streets == null || props.reports == null">
           <a-skeleton active />
         </template>
@@ -30,7 +30,8 @@
           <a-divider />
           <a-checkbox-group v-model:value="visibleTypes" :options="selectableTypes" :class="$style.selections" />
           <a-divider />
-          <a-checkbox-group v-model:value="visibleSources" :options="selectableSources" :class="$style.selections" />
+          <a-checkbox-group v-model:value="visibleSources" :options="selectableSources" :class="$style.selections"
+            :style="{ maxHeight: '190px' }" />
           <a-divider />
           <a-typography-text type="secondary" :style="{ fontSize: '90%' }">
             <p>标记仅示意新增数字所属街道，并不代表感染者准确位置。</p>
