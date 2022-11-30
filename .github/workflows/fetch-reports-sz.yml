@@ -1,0 +1,85 @@
+name: Fetch reports (SZ)
+
+on:
+  push:
+    branches: [ master ]
+  schedule:
+    - cron: "0 1 * * *"
+  workflow_dispatch:
+    inputs:
+      force_run:
+        description: Force run
+        required: false
+        type: boolean
+
+concurrency:
+  group: fetch-reports-sz
+  cancel-in-progress: true
+
+jobs:
+  get-changed:
+    runs-on: ubuntu-latest
+    outputs:
+      any_changed: ${{ steps.changed-files.outputs.any_changed }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Get changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v34
+        with:
+          files: |
+            packages/common/**
+            packages/bots/**
+
+  fetch-reports:
+    if: needs.get-changed.outputs.any_changed == 'true' || inputs.force_run
+    runs-on: ubuntu-latest
+    needs: get-changed
+
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+
+      - name: Set up Node 16
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Checkout data branch
+        uses: actions/checkout@v3
+        with:
+          ref: data
+          path: data
+
+      - name: Fetch data
+        run: npm -w @cdata/bots run script scripts/reports/sz
+        env:
+          QQLBS_KEY: ${{ secrets.QQLBS_KEY }}
+
+      - name: Get current time
+        uses: gerred/actions/current-time@master
+        id: current-time
+
+      - name: Publish
+        uses: crazy-max/ghaction-github-pages@v2
+        with:
+          target_branch: data
+          keep_history: true
+          allow_empty_commit: false
+          build_dir: data
+          commit_message: "Update reports of Shenzhen ${{ steps.current-time.outputs.time }}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deploy
+        run: gh workflow run deploy.yml -F force_run=true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
