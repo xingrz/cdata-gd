@@ -181,7 +181,7 @@ interface RefUrl {
 
 const refUrls: Record<string, RefUrl> = {
   '广州': { name: '广州市卫健委', url: 'http://wjw.gz.gov.cn/ztzl/xxfyyqfk/yqtb/index.html' },
-  '深圳': { name: '深圳市政府数据开放平台', url: 'https://opendata.sz.gov.cn/data/dataSet/toDataDetails/29200_05800007' },
+  '深圳': { name: '深圳市卫健委', url: 'http://wjw.sz.gov.cn/yqxx/index.html' },
 };
 </script>
 

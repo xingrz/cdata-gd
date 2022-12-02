@@ -18,6 +18,7 @@ await fs.ensureDir(reportsDir);
 
 const streetsToResolve: Record<string, boolean> = {};
 
+console.log('正在抓取目录…');
 for (const item of (await fetchIndex()).slice(0, MAX_FETCH)) {
   try {
     const time = (() => {
@@ -38,14 +39,11 @@ for (const item of (await fetchIndex()).slice(0, MAX_FETCH)) {
     const article = await fetchElement(item.url, '[wzades="正文"] p');
 
     const data = parseReport(article);
-    for (const { street } of data['本土确诊病例']) {
-      if (street != '集中隔离场所') {
-        streetsToResolve[street] = true;
-      }
-    }
-    for (const { street } of data['本土无症状感染者']) {
-      if (street != '集中隔离场所') {
-        streetsToResolve[street] = true;
+    for (const items of Object.values(data)) {
+      for (const { street } of items) {
+        if (street != '集中隔离场所') {
+          streetsToResolve[street] = true;
+        }
       }
     }
 
