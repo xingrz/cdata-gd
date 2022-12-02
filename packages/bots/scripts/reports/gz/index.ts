@@ -1,26 +1,20 @@
 import { join, resolve } from 'path';
 import fs from 'fs-extra';
-import { parse, stringify } from 'yaml';
-import _ from 'lodash';
+import { stringify } from 'yaml';
 
 import { geocode } from '../../common/qqlbs';
 import fetchElement from '../../common/fetchElement';
+import { loadStreets, saveStreets } from '../../common/streets';
 import { fetchIndex } from './fetcher';
 import { parseReport } from './parser';
 
 import { IReport } from '@cdata/common/types/report';
-import { ILocation } from '@cdata/common/types/location';
 
 const MAX_FETCH = 30;
 
 const dataDir = resolve('..', '..', 'data');
-await fs.ensureDir(dataDir);
-
 const reportsDir = join(dataDir, 'reports', '广州');
 await fs.ensureDir(reportsDir);
-
-const streetsDir = join(dataDir, 'streets');
-await fs.ensureDir(streetsDir);
 
 const streetsToResolve: Record<string, boolean> = {};
 
@@ -64,10 +58,7 @@ for (const item of (await fetchIndex()).slice(0, MAX_FETCH)) {
   }
 }
 
-const streetsFile = join(streetsDir, '广州.yml');
-const streets: Record<string, ILocation> = await fs.pathExists(streetsFile)
-  ? parse(await fs.readFile(streetsFile, 'utf-8'))
-  : {};
+const streets = await loadStreets('广州');
 
 for (const name of Object.keys(streetsToResolve)) {
   if (streets[name]) continue;
@@ -81,5 +72,4 @@ for (const name of Object.keys(streetsToResolve)) {
   }
 }
 
-const sorted = _(streets).toPairs().sortBy(0).fromPairs().value();
-await fs.outputFile(streetsFile, stringify(sorted));
+await saveStreets('广州', streets);
