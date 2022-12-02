@@ -4,9 +4,14 @@
     {
       本土病例:
         [
-          { street: 龙岗区坂田街道, source: 集中隔离观察人员 },
+          { street: 管控范围, source: 居家隔离医学观察人员 },
+          { street: 管控范围, source: 居家隔离医学观察人员 },
+          { street: 管控范围, source: 居家隔离医学观察人员 },
+          { street: 管控范围, source: 居家隔离医学观察人员 },
+          { street: 管控范围, source: 集中隔离观察人员 },
+          { street: 管控范围, source: 集中隔离观察人员 },
           { street: 宝安区沙井街道, source: 集中隔离观察人员 }
         ]
     },
-  ref: https://opendata.sz.gov.cn/data/dataSet/toDataDetails/29200_05800007
+  ref: http://wjw.sz.gov.cn/yqxx/content/post_10243802.html
 }

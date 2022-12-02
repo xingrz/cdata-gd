@@ -4,6 +4,11 @@
     {
       本土病例:
         [
+          { street: 管控范围, source: 闭环管理的重点人员筛查 },
+          { street: 管控范围, source: 闭环管理的重点人员筛查 },
+          { street: 管控范围, source: 闭环管理的重点人员筛查 },
+          { street: 管控范围, source: 集中隔离观察人员 },
+          { street: 管控范围, source: 集中隔离观察人员 },
           { street: 坪山区坪山街道, source: 居家隔离医学观察 },
           { street: 坪山区坪山街道, source: 主动就诊 },
           { street: 坪山区龙田街道, source: 非闭环管理的重点人员筛查 },
@@ -84,5 +89,5 @@
           { street: 宝安区沙井街道, source: 集中隔离观察人员 }
         ]
     },
-  ref: https://opendata.sz.gov.cn/data/dataSet/toDataDetails/29200_05800007
+  ref: http://wjw.sz.gov.cn/yqxx/content/post_10276979.html
 }

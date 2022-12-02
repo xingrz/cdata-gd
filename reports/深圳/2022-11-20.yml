@@ -4,26 +4,27 @@
     {
       本土病例:
         [
+          { street: 管控范围, source: 闭环管理的重点人员筛查 },
           { street: 龙华区龙华街道, source: 集中隔离观察人员 },
           { street: 龙华区龙华街道, source: 集中隔离观察人员 },
           { street: 龙华区大浪街道, source: 集中隔离观察人员 },
           { street: 龙华区大浪街道, source: 社区筛查 },
-          { street: 龙岗区龙城街道, source: 闭环管理的重点人员筛查 },
-          { street: 龙岗区坂田街道, source: 居家隔离医学观察人员 },
-          { street: 龙岗区南湾街道, source: 非闭环管理的重点人员筛查 },
+          { street: 管控范围, source: 闭环管理的重点人员筛查 },
+          { street: 管控范围, source: 居家隔离医学观察人员 },
+          { street: 管控范围, source: 非闭环管理的重点人员筛查 },
           { street: 光明区马田街道, source: 集中隔离观察人员 },
           { street: 光明区马田街道, source: 集中隔离观察人员 },
           { street: 福田区园岭街道, source: 集中隔离观察人员 },
-          { street: 福田区福田街道, source: 非闭环管理的重点人员筛查 },
-          { street: 福田区香蜜湖街道, source: 非闭环管理的重点人员筛查 },
-          { street: 罗湖区莲塘街道, source: 非闭环管理的重点人员筛查 },
+          { street: 管控范围, source: 非闭环管理的重点人员筛查 },
+          { street: 管控范围, source: 非闭环管理的重点人员筛查 },
+          { street: 管控范围, source: 非闭环管理的重点人员筛查 },
           { street: 罗湖区翠竹街道, source: 社区筛查 },
-          { street: 罗湖区东门街道, source: 非闭环管理的重点人员筛查 },
-          { street: 南山区西丽街道, source: 主动就诊 },
+          { street: 管控范围, source: 非闭环管理的重点人员筛查 },
+          { street: 管控范围, source: 主动就诊 },
           { street: 南山区蛇口街道, source: 集中隔离观察人员 },
-          { street: 坪山区坪山街道, source: 居家隔离医学观察人员 },
+          { street: 管控范围, source: 居家隔离医学观察人员 },
           { street: 宝安区西乡街道, source: 居家隔离医学观察人员 }
         ]
     },
-  ref: https://opendata.sz.gov.cn/data/dataSet/toDataDetails/29200_05800007
+  ref: http://wjw.sz.gov.cn/yqxx/content/post_10254102.html
 }
