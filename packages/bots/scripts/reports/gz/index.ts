@@ -4,7 +4,8 @@ import { parse, stringify } from 'yaml';
 import _ from 'lodash';
 
 import { geocode } from '../../common/qqlbs';
-import { fetchArticle, fetchIndex } from './fetcher';
+import fetchElement from '../../common/fetchElement';
+import { fetchIndex } from './fetcher';
 import { parseReport } from './parser';
 
 import { IReport } from '@cdata/common/types/report';
@@ -40,7 +41,7 @@ for (const item of (await fetchIndex()).slice(0, MAX_FETCH)) {
     }
 
     console.log(`正在抓取 ${item.title}…`);
-    const article = await fetchArticle(item.url);
+    const article = await fetchElement(item.url, '[wzades="正文"] p');
 
     const data = parseReport(article);
     for (const { street } of data['本土确诊病例']) {
