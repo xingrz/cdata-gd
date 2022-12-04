@@ -104,7 +104,11 @@ function filterType(type: IIncreaseType) {
 }
 
 function filterCity(city: string) {
-  return props.city != null || visibleCities.value.length == 0 || visibleCities.value.includes(city);
+  if (props.city == null) {
+    return visibleCities.value.length == 0 || visibleCities.value.includes(city);
+  } else {
+    return props.city == city;
+  }
 }
 
 const flattenItems = computed<IFlattenItem[]>(() => (props.stats || [])
