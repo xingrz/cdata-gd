@@ -18,7 +18,7 @@
           <stats-card :stats="stats" title="昨日新增境外输入无症状" type="新增境外输入无症状感染者" :city="visibleCity" />
         </a-col>
         <a-col :xs="24">
-          <timeline-card :stats="stats" :city="visibleCity" />
+          <timeline-card :stats="stats" :city="visibleCity" :cities="cities" />
         </a-col>
         <a-col :xs="24" v-if="visibleCity">
           <district-card :city="visibleCity" :reports="reports" :streets="streets" />
