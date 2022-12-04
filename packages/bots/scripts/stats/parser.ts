@@ -23,7 +23,7 @@ export function parseStats(input: string): IStats {
       const cities: Record<string, number> = {};
 
       let sum = 0;
-      for (const piece of details.split(/，|、/)) {
+      for (const piece of details.split(/，|、|,/)) {
         const city = piece.match(/^([^\d]+)(\d+)/);
         if (city) {
           const name = city[1].trim();
