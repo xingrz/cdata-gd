@@ -35,8 +35,12 @@ export default function usePlot<P extends IPlot<T>, T>(data: Ref<T[]>, creator: 
     plot.value = undefined;
   });
 
-  watch(data, (data) => {
-    plot.value?.changeData(data);
+  watch(data, (data, oldData) => {
+    if (plot.value instanceof G2Plot && data.length != oldData.length) {
+      plot.value?.update({ data });
+    } else {
+      plot.value?.changeData(data);
+    }
   });
 
   return { el, plot };
