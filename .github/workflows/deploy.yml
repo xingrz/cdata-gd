@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - master
-      - data
   workflow_dispatch:
     inputs:
       force_run:
@@ -41,7 +40,7 @@ jobs:
             packages/web/**
 
   build:
-    if: needs.get-changed.outputs.any_changed == 'true' || github.ref_name == 'data' || inputs.force_run
+    if: needs.get-changed.outputs.any_changed == 'true' || inputs.force_run
     runs-on: ubuntu-latest
     needs: get-changed
 
@@ -79,7 +78,7 @@ jobs:
           path: packages/web/dist
 
   deploy:
-    if: needs.get-changed.outputs.any_changed == 'true' || github.ref_name == 'data' || inputs.force_run
+    if: needs.get-changed.outputs.any_changed == 'true' || inputs.force_run
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
