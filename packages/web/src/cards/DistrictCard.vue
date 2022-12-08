@@ -16,7 +16,9 @@
             :style="{ width: '100%' }">
             <template #renderExtraFooter>
               <a-space>
-                <a-button size="small" @click="() => range = recent(props.reports, 1)" type="primary">昨天</a-button>
+                <a-button size="small" @click="() => range = recent(props.reports, 1)" v-if="outdated">近 1 天</a-button>
+                <a-button size="small" @click="() => range = recent(props.reports, 1)" v-else
+                  type="primary">昨天</a-button>
                 <a-input-group compact>
                   <a-button size="small" @click="() => range = recent(props.reports, 60)">近 60 天</a-button>
                   <a-button size="small" @click="() => range = recent(props.reports, 30)">近 30 天</a-button>
@@ -25,6 +27,7 @@
               </a-space>
             </template>
           </a-range-picker>
+          <a-alert v-if="outdated" message="暂无最新数据。你可以选择浏览其它日期的历史数据。" type="warning" :style="{ marginTop: '8px' }" />
           <a-divider />
           <div ref="barEl" :style="{ height: '150px' }" />
           <a-divider />
@@ -52,12 +55,12 @@ import { computed, ref, watch } from 'vue';
 import type { SelectProps } from 'ant-design-vue';
 import { Bar } from '@antv/g2plot';
 import { Dot } from '@antv/l7plot';
-import type { Dayjs } from 'dayjs';
-import { sortBy, uniq } from 'lodash-es';
+import dayjs, { type Dayjs } from 'dayjs';
+import { last, sortBy, uniq } from 'lodash-es';
 import type { IReport } from '@cdata/common/types/report';
 import type { ILocation } from '@cdata/common/types/location';
 
-import { isUnavailable, recent, withIn } from '@/utils/day';
+import { dayOf, isUnavailable, recent, withIn } from '@/utils/day';
 
 import usePlot from '@/composables/usePlot';
 
@@ -66,6 +69,9 @@ const props = defineProps<{
   reports: IReport[] | null;
   streets: Record<string, ILocation> | null;
 }>();
+
+const outdated = computed(() => props.reports &&
+  dayOf(last(props.reports)!.time) < dayjs().subtract(1, 'day').endOf('day'));
 
 const range = ref<[Dayjs, Dayjs]>();
 
